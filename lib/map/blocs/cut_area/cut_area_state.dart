@@ -88,7 +88,7 @@ class CutAreaState {
     return _polyRepository.calculateMowingTime(pathLength: calculatePathLength());
   }
 
-  List<LatLng> generatePathInsidePolygon({double stepM = 3}) {
+  List<LatLng> generatePathInsidePolygon({double stepM = 2}) {
     final points = List<LatLng>.from(markers.map((e) => e.position).toList());
     return _polyRepository.generatePathInsidePolygon(points, stepM);
   }

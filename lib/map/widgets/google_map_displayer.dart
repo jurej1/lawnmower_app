@@ -61,7 +61,7 @@ class GoogleMapDisplayer extends StatelessWidget {
                 ? {
                     Polyline(
                       polylineId: const PolylineId("path"),
-                      color: Colors.blue,
+                      color: Colors.white,
                       endCap: Cap.roundCap,
                       width: 2,
                       points: state.generatePathInsidePolygon(),
