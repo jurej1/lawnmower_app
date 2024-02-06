@@ -12,45 +12,46 @@ class BottomActionRow extends StatelessWidget {
       builder: (context, state) {
         return Row(
           children: [
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(12),
+            if (state.isMapLoaded)
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "A: ${state.calculateAreaOfGPSPolygonOnEarthInSquareMeters().round()}m²",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "t: ${state.calculateMowingTime().round()} min",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "l: ${state.calculatePathLength().round()} m",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
               ),
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "A: ${state.calculateAreaOfGPSPolygonOnEarthInSquareMeters().round()}m²",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "t: ${state.calculateMowingTime().round()} min",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "l: ${state.calculatePathLength().round()} m",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  )
-                ],
-              ),
-            ),
             const SizedBox(width: 10),
             CupertinoSwitch(
               activeColor: Colors.green,

@@ -103,4 +103,10 @@ class FirebaseRepository {
 
     return jsonDecode(response.body);
   }
+
+  Future<void> getDHTReading() async {
+    final url = firebaseUrl + "DHT.json";
+    final response = await http.get(Uri.parse(url));
+    return jsonDecode(response.body);
+  }
 }
