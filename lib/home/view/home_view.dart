@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
+import 'package:lawnmower_app/home/widgets/widgets.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 import '../../map/blocs/blocs.dart';
@@ -101,16 +102,7 @@ class _ActionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const BasedBatteryIndicator(
-          status: BasedBatteryStatus(
-            value: 70,
-            type: BasedBatteryStatusType.normal,
-          ),
-          trackHeight: 20.0,
-          trackAspectRatio: 2.0,
-          curve: Curves.ease,
-          // duration: const Duration(second: 1),
-        ),
+        BatteryDisplayer.provider(),
         const Spacer(),
         SizedBox(
           height: 30,

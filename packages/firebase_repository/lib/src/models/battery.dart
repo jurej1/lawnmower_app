@@ -40,8 +40,9 @@ class Battery extends Equatable {
   factory Battery.fromMap(Map<String, dynamic> map) {
     return Battery(
       isCharging: map['isCharging'] as bool,
-      val: map['val'] as int,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
+      val: map['state'] as int,
+      // dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
+      dateTime: DateTime.now(), // TODO FIX THIS
     );
   }
 
