@@ -6,22 +6,26 @@ import 'package:equatable/equatable.dart';
 class Battery extends Equatable {
   final bool isCharging;
   final int val;
+  final DateTime dateTime;
 
   const Battery({
     required this.isCharging,
     required this.val,
+    required this.dateTime,
   });
 
   @override
-  List<Object> get props => [isCharging, val];
+  List<Object> get props => [isCharging, val, dateTime];
 
   Battery copyWith({
     bool? isCharging,
     int? val,
+    DateTime? dateTime,
   }) {
     return Battery(
       isCharging: isCharging ?? this.isCharging,
       val: val ?? this.val,
+      dateTime: dateTime ?? this.dateTime,
     );
   }
 
@@ -29,6 +33,7 @@ class Battery extends Equatable {
     return <String, dynamic>{
       'isCharging': isCharging,
       'val': val,
+      'dateTime': dateTime.millisecondsSinceEpoch,
     };
   }
 
@@ -36,6 +41,7 @@ class Battery extends Equatable {
     return Battery(
       isCharging: map['isCharging'] as bool,
       val: map['val'] as int,
+      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime'] as int),
     );
   }
 
