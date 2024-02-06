@@ -44,7 +44,7 @@ class HomeView extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(BluetoothView.route());
                 },
-                child: Text('BLE'),
+                child: const Text('BLE'),
               ),
               const Spacer(),
             ],
