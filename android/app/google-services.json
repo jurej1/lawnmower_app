@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1016714013047",
+    "firebase_url": "https://lawnmower-825c3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "lawnmower-825c3",
+    "storage_bucket": "lawnmower-825c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016714013047:android:5918fa431824d8c025d972",
+        "android_client_info": {
+          "package_name": "com.example.lawnmower_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016714013047-3pav798jdj03kd3113maeqk272s9kp6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKdZWsTxEZoG0b1AKIRioKvYFfByemhe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016714013047-3pav798jdj03kd3113maeqk272s9kp6v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
