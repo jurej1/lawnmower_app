@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:firebase_repository/firebase_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,16 +11,7 @@ class MapView extends StatelessWidget {
   static route(context) {
     return MaterialPageRoute(
       builder: (_) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider.value(
-              value: BlocProvider.of<UserLocationCubit>(context),
-            ),
-          ],
-          child: const MapView(),
-        );
-
-        // return const MapView();
+        return const MapView();
       },
     );
   }
