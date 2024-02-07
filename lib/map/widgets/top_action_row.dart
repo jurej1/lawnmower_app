@@ -17,11 +17,9 @@ class TopActionRow extends StatelessWidget {
               child: IconButton(
                 color: Colors.white,
                 icon: const Icon(Icons.add),
-                onPressed: !(state.markers.length > 3)
-                    ? () {
-                        BlocProvider.of<CutAreaBloc>(context).add(CutAreaAddMarker());
-                      }
-                    : null,
+                onPressed: () {
+                  BlocProvider.of<CutAreaBloc>(context).add(CutAreaAddMarker());
+                },
               ),
             ),
             const SizedBox(width: 15),

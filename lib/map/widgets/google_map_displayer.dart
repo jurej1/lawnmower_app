@@ -22,8 +22,6 @@ class GoogleMapDisplayer extends StatelessWidget {
           return GoogleMap(
             compassEnabled: true,
             mapType: MapType.satellite,
-            // myLocationButtonEnabled: true,
-            // myLocationEnabled: true,
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             onMapCreated: (controller) {
               _onMapCreated(controller);
@@ -31,7 +29,7 @@ class GoogleMapDisplayer extends StatelessWidget {
             },
             initialCameraPosition: CameraPosition(
               zoom: 18.0,
-              target: state.userLocation,
+              target: state.homeBaseLocation ?? state.userLocation,
             ),
             markers: {
               ...state.markers
@@ -77,7 +75,7 @@ class GoogleMapDisplayer extends StatelessWidget {
                 polylineId: const PolylineId("start-path"),
                 color: Colors.blue,
                 endCap: Cap.roundCap,
-                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
                 patterns: [
                   PatternItem.dot,
                   PatternItem.gap(5),
@@ -91,7 +89,7 @@ class GoogleMapDisplayer extends StatelessWidget {
                 color: Colors.blue.shade200,
                 endCap: Cap.roundCap,
                 width: 2,
-                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
                 patterns: [
                   PatternItem.dot,
                   PatternItem.gap(5),
