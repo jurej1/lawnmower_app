@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_repository/firebase_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'battery_state.dart';
 

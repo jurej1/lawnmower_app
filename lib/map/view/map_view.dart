@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:lawnmower_app/map/widgets/widgets.dart';
+import 'dart:developer';
+
+import 'package:poly_repository/poly_repository.dart';
 
 class MapView extends StatelessWidget {
   const MapView({super.key});
@@ -35,6 +38,7 @@ class MapView extends StatelessWidget {
 
           if (state is UserLocationLoaded) {
             final userLocation = LatLng(state.locationData.latitude!, state.locationData.longitude!);
+            log(userLocation.toString());
             return _BodyBuilder.provider(userLocation);
           }
 

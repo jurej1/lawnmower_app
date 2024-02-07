@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
