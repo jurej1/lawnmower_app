@@ -42,7 +42,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
   final FirebaseRepository _firebaseRepository;
   final PolyRepository _polyRepository;
-  final double stepSize = 5;
+  final double stepSize = 2;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
@@ -150,7 +150,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
           )
           .toList();
 
-      final path = _polyRepository.generatePathInsidePolygon(points, 1);
+      final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
       emit(
         state.copyWith(
           markers: markers,
@@ -174,6 +174,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
   FutureOr<void> _mapPathSwitchToState(CutAreaPathSwitchClicked event, Emitter<CutAreaState> emit) {
     final newShowPath = !state.showPath;
+
     emit(
       state.copyWith(
         showPath: newShowPath,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lawnmower_app/map/blocs/cut_area/cut_area_bloc.dart';
@@ -18,9 +17,11 @@ class TopActionRow extends StatelessWidget {
               child: IconButton(
                 color: Colors.white,
                 icon: const Icon(Icons.add),
-                onPressed: () {
-                  BlocProvider.of<CutAreaBloc>(context).add(CutAreaAddMarker());
-                },
+                onPressed: !(state.markers.length > 3)
+                    ? () {
+                        BlocProvider.of<CutAreaBloc>(context).add(CutAreaAddMarker());
+                      }
+                    : null,
               ),
             ),
             const SizedBox(width: 15),

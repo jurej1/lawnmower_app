@@ -18,10 +18,10 @@ class PolyRepository {
 
     double currentX = minX;
     double currentY = minY;
-    bool moveUp = true;
+    bool moveRight = true;
 
     while (currentX <= maxX) {
-      if (moveUp) {
+      if (moveRight) {
         while (currentY <= maxY) {
           LatLng point = LatLng(currentX, currentY);
           if (isPointInPolygon(point, polygonPoints)) {
@@ -38,7 +38,7 @@ class PolyRepository {
           currentY -= stepSize;
         }
       }
-      moveUp = !moveUp;
+      moveRight = !moveRight;
       currentX += stepSize;
     }
 
@@ -74,6 +74,36 @@ class PolyRepository {
     double latitudeRadians = 46.686912 * pi / 180; // Assuming a latitude for conversion (change this to your specific latitude)
     double stepSize = meters / (111320 * cos(latitudeRadians));
     return stepSize;
+  }
+
+  bool isConvexPolygon(List<LatLng> vertices) {
+    int n = vertices.length;
+    if (n < 3) {
+      return false;
+    }
+
+    // Initialize sign to track the direction of turns
+    bool? sign;
+
+    // Iterate through each set of three consecutive vertices
+    for (int i = 0; i < n; i++) {
+      LatLng p1 = vertices[i];
+      LatLng p2 = vertices[(i + 1) % n];
+      LatLng p3 = vertices[(i + 2) % n];
+
+      // Calculate cross product of adjacent edges
+      double cross = (p2.longitude - p1.longitude) * (p3.latitude - p2.latitude) - (p2.latitude - p1.latitude) * (p3.longitude - p2.longitude);
+
+      // Determine the sign of the cross product
+      if (cross != 0) {
+        if (sign == null) {
+          sign = cross > 0;
+        } else if (sign != (cross > 0)) {
+          return false; // Sign changed, polygon is not convex
+        }
+      }
+    }
+    return true;
   }
 
   double calculatePathLength(List<LatLng> path) {

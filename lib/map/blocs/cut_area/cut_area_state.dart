@@ -32,7 +32,7 @@ enum CutAreaStatus {
   fail,
 }
 
-class CutAreaState {
+class CutAreaState extends Equatable {
   const CutAreaState({
     required this.markers,
     this.path,
@@ -103,5 +103,20 @@ class CutAreaState {
   List<LatLng> getMoveHomePath() {
     if (path == null && homeBaseLocation == null) return [];
     return [path!.last, homeBaseLocation!];
+  }
+
+  @override
+  List<Object?> get props {
+    return [
+      markers,
+      path,
+      userLocation,
+      homeBaseLocation,
+      showPoly,
+      showPath,
+      submitStatus,
+      loadStatus,
+      isMapLoaded,
+    ];
   }
 }
