@@ -141,6 +141,12 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   }
 
   FutureOr<void> _mapPathSwitchToState(CutAreaPathSwitchClicked event, Emitter<CutAreaState> emit) {
-    emit(state.copyWith(showPath: !state.showPath));
+    final newShowPath = !state.showPath;
+    emit(
+      state.copyWith(
+        showPath: newShowPath,
+        showPoly: newShowPath == true ? true : null,
+      ),
+    );
   }
 }
