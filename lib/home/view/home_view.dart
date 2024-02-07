@@ -23,10 +23,6 @@ class HomeView extends StatelessWidget {
             weatherRepository: RepositoryProvider.of<WeatherRepository>(context),
           )..getWeatherInfo(),
         ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => UserLocationCubit()..getCurrentLocation(),
-        ),
       ],
       child: const HomeView(),
     );

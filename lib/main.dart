@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lawnmower_app/firebase_options.dart';
 import 'package:lawnmower_app/home/home.dart';
 import 'package:lawnmower_app/lawnmower_bloc_observer.dart';
+import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 void main() async {
@@ -45,8 +46,16 @@ class _AppState extends State<App> {
         RepositoryProvider.value(value: widget._weatherRepository),
         RepositoryProvider.value(value: widget._firebaseRepository),
       ],
-      child: MaterialApp(
-        home: HomeView.provider(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<UserLocationCubit>(
+            lazy: false,
+            create: (context) => UserLocationCubit()..getCurrentLocation(),
+          ),
+        ],
+        child: MaterialApp(
+          home: HomeView.provider(),
+        ),
       ),
     );
   }

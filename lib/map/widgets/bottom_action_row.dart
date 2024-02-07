@@ -12,7 +12,7 @@ class BottomActionRow extends StatelessWidget {
       builder: (context, state) {
         return Row(
           children: [
-            if (state.isMapLoaded)
+            if (state.isMapLoaded && state.isEnoughMarkers)
               Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -53,27 +53,25 @@ class BottomActionRow extends StatelessWidget {
                 ),
               ),
             const SizedBox(width: 10),
-            CupertinoSwitch(
-              activeColor: Colors.green,
-              trackColor: Colors.green.withOpacity(0.2),
-              onChanged: state.isEnoughMarkers
-                  ? (val) {
-                      BlocProvider.of<CutAreaBloc>(context).add(CutAreaShowPoly());
-                    }
-                  : null,
-              value: state.showPoly,
-            ),
+            if (state.isMapLoaded && state.isEnoughMarkers)
+              CupertinoSwitch(
+                activeColor: Colors.green,
+                trackColor: Colors.green.withOpacity(0.2),
+                onChanged: (val) {
+                  BlocProvider.of<CutAreaBloc>(context).add(CutAreaShowPoly());
+                },
+                value: state.showPoly,
+              ),
             const SizedBox(width: 10),
-            CupertinoSwitch(
-              trackColor: Colors.blue.withOpacity(0.4),
-              activeColor: Colors.blue,
-              onChanged: state.isMapLoaded && state.isEnoughMarkers
-                  ? (val) {
-                      BlocProvider.of<CutAreaBloc>(context).add(CutAreaPathSwitchClicked());
-                    }
-                  : null,
-              value: state.showPath,
-            ),
+            if (state.isMapLoaded && state.isEnoughMarkers)
+              CupertinoSwitch(
+                trackColor: Colors.blue.withOpacity(0.4),
+                activeColor: Colors.blue,
+                onChanged: (val) {
+                  BlocProvider.of<CutAreaBloc>(context).add(CutAreaPathSwitchClicked());
+                },
+                value: state.showPath,
+              ),
           ],
         );
       },

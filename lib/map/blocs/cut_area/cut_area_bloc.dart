@@ -91,8 +91,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     }
   }
 
-  FutureOr<void> _mapDeleteMarkersToState(CutAreaDeleteMarkers event, Emitter<CutAreaState> emit) {
-    emit(state.copyWith(markers: []));
+  FutureOr<void> _mapDeleteMarkersToState(CutAreaDeleteMarkers event, Emitter<CutAreaState> emit) async {
+    try {
+      // await _firebaseRepository.setCutArea([]);
+      emit(state.copyWith(markers: []));
+    } catch (e) {
+      emit(state);
+    }
   }
 
   FutureOr<void> _mapInitToState(CutAreaInit event, Emitter<CutAreaState> emit) async {
