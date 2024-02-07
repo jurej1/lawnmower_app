@@ -56,6 +56,25 @@ class FirebaseRepository {
     );
   }
 
+  Future<http.Response> setCutPath(List<LatLng> path) async {
+    final url = firebaseUrl + "cut_path.json";
+
+    final jsonData = path
+        .map((e) => {
+              "lat": e.latitude,
+              "lng": e.longitude,
+            })
+        .toList();
+
+    final jsonString = jsonEncode(jsonData);
+
+    return http.put(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonString,
+    );
+  }
+
   Future<List<LatLng>> getCutArea() async {
     final url = firebaseUrl + "cut_area.json";
 
@@ -74,6 +93,27 @@ class FirebaseRepository {
       return result;
     } else {
       throw Exception('Failed to load cut area data');
+    }
+  }
+
+  Future<List<LatLng>> getCutPath() async {
+    final url = firebaseUrl + "cut_path.json";
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+
+      List<LatLng> result = jsonData.map((data) {
+        return LatLng(
+          data["lat"],
+          data["lng"],
+        );
+      }).toList();
+
+      return result;
+    } else {
+      throw Exception('Failed to load cut path data');
     }
   }
 

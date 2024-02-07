@@ -99,6 +99,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
       http.Response response = await _firebaseRepository.setCutArea(points);
 
+      if (state.path != null) {
+        List<LatLng> path = _polyRepository.generatePathInsidePolygon(points, stepSize);
+        emit(state.copyWith(path: path));
+      }
+
+      await _firebaseRepository.setCutPath(state.path!);
+
       if (response.statusCode == 200) {
         emit(state.copyWith(submitStatus: CutAreaStatus.success));
       } else {
@@ -130,6 +137,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       List<LatLng> points = await _firebaseRepository.getCutArea();
 
       LatLng homeBaseLocation = await _firebaseRepository.getHomeBaseGPS();
+      List<LatLng> path = await _firebaseRepository.getCutPath();
 
       List<MarkerShort> markers = points
           .map(
@@ -142,7 +150,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
           )
           .toList();
 
-      final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
       emit(
         state.copyWith(
           markers: markers,
