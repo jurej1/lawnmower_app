@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:lawnmower_app/map/widgets/widgets.dart';
-import 'dart:developer';
 
 import 'package:poly_repository/poly_repository.dart';
 
