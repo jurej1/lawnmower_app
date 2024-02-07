@@ -96,6 +96,25 @@ class FirebaseRepository {
     }
   }
 
+  Future<LatLng> getHomeBaseGPS() async {
+    final url = firebaseUrl + "GPS_homebase.json";
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final dynamic jsonData = jsonDecode(response.body);
+
+      LatLng location = LatLng(
+        jsonData["lat"],
+        jsonData["lng"],
+      );
+
+      return location;
+    } else {
+      throw Exception('Failed to load current robot location data');
+    }
+  }
+
   Future<void> getRobotLocation() async {
     final url = firebaseUrl + "GPS_current.json";
 

@@ -35,29 +35,31 @@ enum CutAreaStatus {
 class CutAreaState {
   const CutAreaState({
     required this.markers,
+    this.path,
     required this.userLocation,
-    this.robotLocation,
+    this.homeBaseLocation,
     required this.showPoly,
+    required this.showPath,
     required this.submitStatus,
     required this.loadStatus,
     required this.isMapLoaded,
-    required this.showPath,
   });
 
   final List<MarkerShort> markers;
+  final List<LatLng>? path;
   final LatLng userLocation;
-  final LatLng? robotLocation;
+  final LatLng? homeBaseLocation;
   final bool showPoly;
   final bool showPath;
-
   final CutAreaStatus submitStatus;
   final CutAreaStatus loadStatus;
   final bool isMapLoaded;
 
   CutAreaState copyWith({
     List<MarkerShort>? markers,
+    List<LatLng>? path,
     LatLng? userLocation,
-    LatLng? robotLocation,
+    LatLng? homeBaseLocation,
     bool? showPoly,
     bool? showPath,
     CutAreaStatus? submitStatus,
@@ -66,8 +68,9 @@ class CutAreaState {
   }) {
     return CutAreaState(
       markers: markers ?? this.markers,
+      path: path ?? this.path,
       userLocation: userLocation ?? this.userLocation,
-      robotLocation: robotLocation ?? this.robotLocation,
+      homeBaseLocation: homeBaseLocation ?? this.homeBaseLocation,
       showPoly: showPoly ?? this.showPoly,
       showPath: showPath ?? this.showPath,
       submitStatus: submitStatus ?? this.submitStatus,
@@ -88,12 +91,17 @@ class CutAreaState {
     return _polyRepository.calculateMowingTime(pathLength: calculatePathLength());
   }
 
-  List<LatLng> generatePathInsidePolygon({double stepM = 2}) {
-    final points = List<LatLng>.from(markers.map((e) => e.position).toList());
-    return _polyRepository.generatePathInsidePolygon(points, stepM);
+  double calculatePathLength() {
+    return _polyRepository.calculatePathLength(path ?? []);
   }
 
-  double calculatePathLength() {
-    return _polyRepository.calculatePathLength(generatePathInsidePolygon());
+  List<LatLng> getMoveToStartPath() {
+    if (homeBaseLocation == null && path == null) return [];
+    return [homeBaseLocation!, path!.first];
+  }
+
+  List<LatLng> getMoveHomePath() {
+    if (path == null && homeBaseLocation == null) return [];
+    return [path!.last, homeBaseLocation!];
   }
 }

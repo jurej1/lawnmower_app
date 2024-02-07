@@ -38,7 +38,7 @@ class MapView extends StatelessWidget {
 
           if (state is UserLocationLoaded) {
             final userLocation = LatLng(state.locationData.latitude!, state.locationData.longitude!);
-            log(userLocation.toString());
+
             return _BodyBuilder.provider(userLocation);
           }
 
@@ -60,6 +60,7 @@ class _BodyBuilder extends StatefulWidget {
       create: (context) => CutAreaBloc(
         userLocation: userLocation,
         firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
+        polyRepository: RepositoryProvider.of<PolyRepository>(context),
       )..add(CutAreaInit()),
       child: _BodyBuilder(),
     );

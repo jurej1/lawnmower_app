@@ -6,6 +6,7 @@ import 'package:lawnmower_app/firebase_options.dart';
 import 'package:lawnmower_app/home/home.dart';
 import 'package:lawnmower_app/lawnmower_bloc_observer.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
+import 'package:poly_repository/poly_repository.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 void main() async {
@@ -20,6 +21,7 @@ void main() async {
     const App(
       weatherRepository: WeatherRepository(),
       firebaseRepository: FirebaseRepository(),
+      polyRepository: PolyRepository(),
     ),
   );
 }
@@ -27,12 +29,15 @@ void main() async {
 class App extends StatefulWidget {
   final WeatherRepository _weatherRepository;
   final FirebaseRepository _firebaseRepository;
+  final PolyRepository _polyRepository;
   const App({
     super.key,
     required WeatherRepository weatherRepository,
     required FirebaseRepository firebaseRepository,
+    required PolyRepository polyRepository,
   })  : _weatherRepository = weatherRepository,
-        _firebaseRepository = firebaseRepository;
+        _firebaseRepository = firebaseRepository,
+        _polyRepository = polyRepository;
 
   @override
   State<App> createState() => _AppState();
@@ -45,6 +50,7 @@ class _AppState extends State<App> {
       providers: [
         RepositoryProvider.value(value: widget._weatherRepository),
         RepositoryProvider.value(value: widget._firebaseRepository),
+        RepositoryProvider.value(value: widget._polyRepository),
       ],
       child: MultiBlocProvider(
         providers: [

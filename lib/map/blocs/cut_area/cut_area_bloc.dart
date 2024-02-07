@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as dev;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
@@ -17,7 +15,9 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   CutAreaBloc({
     required LatLng userLocation,
     required FirebaseRepository firebaseRepository,
+    required PolyRepository polyRepository,
   })  : _firebaseRepository = firebaseRepository,
+        _polyRepository = polyRepository,
         super(
           CutAreaState(
             loadStatus: CutAreaStatus.initial,
@@ -41,6 +41,8 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   }
 
   final FirebaseRepository _firebaseRepository;
+  final PolyRepository _polyRepository;
+  final double stepSize = 5;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
@@ -55,13 +57,22 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       return e;
     }).toList();
 
-    emit(state.copyWith(markers: newList));
+    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+
+    emit(
+      state.copyWith(
+        markers: newList,
+        path: path,
+      ),
+    );
   }
 
   FutureOr<void> _mapAddMarkerToState(CutAreaAddMarker event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
     newList.add(MarkerShort(position: state.userLocation, id: MarkerId(newList.length.toString())));
-    emit(state.copyWith(markers: newList));
+    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+
+    emit(state.copyWith(markers: newList, path: path));
   }
 
   FutureOr<void> _mapPolyToState(CutAreaShowPoly event, Emitter<CutAreaState> emit) {
@@ -71,7 +82,14 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   FutureOr<void> _mapRemoveMarkerToState(CutAreaRemoveMarker event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
     newList.removeAt(newList.length - 1);
-    emit(state.copyWith(markers: newList));
+    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+
+    emit(
+      state.copyWith(
+        markers: newList,
+        path: path,
+      ),
+    );
   }
 
   FutureOr<void> _maSubmitToState(CutAreaSubmitPoly event, Emitter<CutAreaState> emit) async {
@@ -79,7 +97,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       emit(state.copyWith(submitStatus: CutAreaStatus.loading));
       List<LatLng> points = state.markers.map((e) => e.position).toList();
 
-      dev.log(points.toString());
       http.Response response = await _firebaseRepository.setCutArea(points);
 
       if (response.statusCode == 200) {
@@ -95,7 +112,12 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   FutureOr<void> _mapDeleteMarkersToState(CutAreaDeleteMarkers event, Emitter<CutAreaState> emit) async {
     try {
       // await _firebaseRepository.setCutArea([]);
-      emit(state.copyWith(markers: []));
+      emit(
+        state.copyWith(
+          markers: [],
+          path: [],
+        ),
+      );
     } catch (e) {
       emit(state);
     }
@@ -107,7 +129,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
       List<LatLng> points = await _firebaseRepository.getCutArea();
 
-      LatLng robotLocation = await _firebaseRepository.getCurrentRobotLocation();
+      LatLng homeBaseLocation = await _firebaseRepository.getHomeBaseGPS();
 
       List<MarkerShort> markers = points
           .map(
@@ -120,11 +142,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
           )
           .toList();
 
+      final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
       emit(
         state.copyWith(
           markers: markers,
-          robotLocation: robotLocation,
+          homeBaseLocation: homeBaseLocation,
           loadStatus: CutAreaStatus.success,
+          path: path,
         ),
       );
     } catch (e) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,11 +22,11 @@ class GoogleMapDisplayer extends StatelessWidget {
       builder: (context, state) {
         if (state.loadStatus == CutAreaStatus.success) {
           return GoogleMap(
-            buildingsEnabled: true,
             compassEnabled: true,
             mapType: MapType.satellite,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
+            // myLocationButtonEnabled: true,
+            // myLocationEnabled: true,
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             onMapCreated: (controller) {
               _onMapCreated(controller);
               BlocProvider.of<CutAreaBloc>(context).add(CutAreaMapLoaded());
@@ -55,32 +56,62 @@ class GoogleMapDisplayer extends StatelessWidget {
                       },
                     ),
                   )
-                  .toSet()
+                  .toSet(),
+              Marker(
+                markerId: const MarkerId("robot-position"),
+                position: state.homeBaseLocation!,
+                visible: state.homeBaseLocation != null,
+                draggable: false,
+                icon: BitmapDescriptor.defaultMarkerWithHue(80),
+              ),
             },
-            polylines: state.showPath && state.isEnoughMarkers
-                ? {
-                    Polyline(
-                      polylineId: const PolylineId("path"),
-                      color: Colors.white,
-                      endCap: Cap.roundCap,
-                      width: 2,
-                      points: state.generatePathInsidePolygon(),
-                      startCap: Cap.roundCap,
-                    ),
-                  }
-                : {},
-            polygons: state.showPoly && state.isEnoughMarkers
-                ? {
-                    Polygon(
-                      polygonId: const PolygonId("1"),
-                      fillColor: Colors.greenAccent.withOpacity(0.5),
-                      strokeColor: Colors.green,
-                      strokeWidth: 2,
-                      visible: state.showPoly,
-                      points: state.markers.map((e) => e.position).toList(),
-                    ),
-                  }
-                : {},
+            polylines: {
+              Polyline(
+                polylineId: const PolylineId("path"),
+                color: Colors.white,
+                endCap: Cap.roundCap,
+                width: 2,
+                visible: state.showPath && state.isEnoughMarkers && state.path != null,
+                points: state.path!,
+                startCap: Cap.roundCap,
+              ),
+              Polyline(
+                polylineId: const PolylineId("start-path"),
+                color: Colors.blue,
+                endCap: Cap.roundCap,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null,
+                patterns: [
+                  PatternItem.dot,
+                  PatternItem.gap(5),
+                ],
+                width: 2,
+                points: state.getMoveToStartPath(),
+                startCap: Cap.roundCap,
+              ),
+              Polyline(
+                polylineId: const PolylineId("end-path"),
+                color: Colors.blue.shade200,
+                endCap: Cap.roundCap,
+                width: 2,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null,
+                patterns: [
+                  PatternItem.dot,
+                  PatternItem.gap(5),
+                ],
+                points: state.getMoveHomePath(),
+                startCap: Cap.roundCap,
+              ),
+            },
+            polygons: {
+              Polygon(
+                polygonId: const PolygonId("1"),
+                fillColor: Colors.greenAccent.withOpacity(0.5),
+                strokeColor: Colors.green,
+                strokeWidth: 2,
+                visible: state.showPoly && state.isEnoughMarkers,
+                points: state.markers.map((e) => e.position).toList(),
+              ),
+            },
           );
         }
 
