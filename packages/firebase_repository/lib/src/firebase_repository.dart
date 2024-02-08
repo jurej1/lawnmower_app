@@ -1,3 +1,4 @@
+import 'package:firebase_repository/firebase_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -53,5 +54,13 @@ class FirebaseRepository {
 
   Future<DataSnapshot> getDHTReading() async {
     return _database.ref("DHT").get();
+  }
+
+  Future<void> setPathData(PathData pathData) async {
+    return _database.ref("path_data").set(pathData.toMap());
+  }
+
+  Future<DataSnapshot> getPathData() async {
+    return _database.ref("path_data").get();
   }
 }

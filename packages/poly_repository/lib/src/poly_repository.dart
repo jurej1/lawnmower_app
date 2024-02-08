@@ -121,7 +121,7 @@ class PolyRepository {
   }
 
   /// CALCULATE MOWING TIME
-  double calculateMowingTime({
+  int calculateMowingTimeInSeconds({
     double mowingSpeedKmh = 3.0, // Default mowing speed in km/h
     double efficiency = 0.8, // Default efficiency factor
     required double pathLength, // Total length of the path in meters
@@ -135,7 +135,10 @@ class PolyRepository {
     // Calculate total time in minutes
     double totalTimeMin = timePerMeterMin * pathLength * efficiency;
 
-    return totalTimeMin;
+    // Convert total time to seconds
+    double totalTimeSec = totalTimeMin * 60;
+
+    return totalTimeSec.round();
   }
 
   static const double EARTH_RADIUS = 6371000; // meters

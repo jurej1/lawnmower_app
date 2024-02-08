@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_repository/firebase_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 
 part 'cut_area_event.dart';
 part 'cut_area_state.dart';
@@ -106,6 +103,14 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
       await _firebaseRepository.setCutPath(state.path!);
 
+      PathData pathData = PathData(
+        cutArea: state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
+        duration: Duration(seconds: state.calculateMowingTime()),
+        length: state.calculatePathLength(),
+      );
+
+      await _firebaseRepository.setPathData(pathData);
+
       emit(state.copyWith(submitStatus: CutAreaStatus.success));
     } catch (e) {
       emit(state.copyWith(submitStatus: CutAreaStatus.fail));
@@ -130,14 +135,24 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     try {
       emit(state.copyWith(loadStatus: CutAreaStatus.loading));
 
+      // points
       final cutAreaSnapshot = await _firebaseRepository.getCutArea();
-
       List<LatLng> points = (cutAreaSnapshot.value as List<dynamic>).map<LatLng>((e) => LatLng(e["lat"], e["lng"])).toList();
 
+      List<MarkerShort> markers = points
+          .asMap()
+          .map<int, MarkerShort>(
+            (key, value) => MapEntry(
+              key,
+              MarkerShort(id: key, position: value),
+            ),
+          )
+          .values
+          .toList();
+
+      //homebase
       final homebaseSnapshot = await _firebaseRepository.getHomeBaseGPS();
-
       Map<String, dynamic> valHomeBase = (homebaseSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
-
       final LatLng homebase = LatLng(valHomeBase["lat"], valHomeBase["lng"]);
 
       // List<LatLng> path = await _firebaseRepository.getCutPath();
@@ -152,17 +167,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       //       ),
       //     )
       //     .toList();
-
-      List<MarkerShort> markers = points
-          .asMap()
-          .map<int, MarkerShort>(
-            (key, value) => MapEntry(
-              key,
-              MarkerShort(id: key, position: value),
-            ),
-          )
-          .values
-          .toList();
 
       final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
       emit(
