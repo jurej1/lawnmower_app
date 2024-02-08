@@ -60,6 +60,7 @@ class _AppState extends State<App> {
           ),
         ],
         child: MaterialApp(
+          darkTheme: ThemeData.dark(),
           home: HomeView.provider(),
         ),
       ),
