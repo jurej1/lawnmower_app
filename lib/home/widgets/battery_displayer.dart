@@ -24,7 +24,7 @@ class BatteryDisplayer extends StatelessWidget {
           return BasedBatteryIndicator(
             status: BasedBatteryStatus(
               value: state.battery.val,
-              type: BasedBatteryStatusType.normal,
+              type: state.battery.isCharging ? BasedBatteryStatusType.charging : BasedBatteryStatusType.normal,
             ),
             trackHeight: 20.0,
             trackAspectRatio: 2.0,
