@@ -1,5 +1,4 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -51,8 +50,8 @@ class HomeView extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.green[200],
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                const BoxShadow(
+              boxShadow: const [
+                BoxShadow(
                   blurRadius: 0.3,
                   offset: Offset(1, 1),
                   color: Colors.black26,
