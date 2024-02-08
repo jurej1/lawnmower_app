@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
@@ -96,7 +97,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       emit(state.copyWith(submitStatus: CutAreaStatus.loading));
       List<LatLng> points = state.markers.map((e) => e.position).toList();
 
-      http.Response response = await _firebaseRepository.setCutArea(points);
+      await _firebaseRepository.setCutArea(points);
 
       if (state.path != null) {
         List<LatLng> path = _polyRepository.generatePathInsidePolygon(points, stepSize);
@@ -105,11 +106,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
       await _firebaseRepository.setCutPath(state.path!);
 
-      if (response.statusCode == 200) {
-        emit(state.copyWith(submitStatus: CutAreaStatus.success));
-      } else {
-        emit(state.copyWith(submitStatus: CutAreaStatus.fail));
-      }
+      emit(state.copyWith(submitStatus: CutAreaStatus.success));
     } catch (e) {
       emit(state.copyWith(submitStatus: CutAreaStatus.fail));
     }
@@ -133,9 +130,16 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     try {
       emit(state.copyWith(loadStatus: CutAreaStatus.loading));
 
-      List<LatLng> points = await _firebaseRepository.getCutArea();
+      final cutAreaSnapshot = await _firebaseRepository.getCutArea();
 
-      LatLng homeBaseLocation = await _firebaseRepository.getHomeBaseGPS();
+      List<LatLng> points = (cutAreaSnapshot.value as List<dynamic>).map<LatLng>((e) => LatLng(e["lat"], e["lng"])).toList();
+
+      final homebaseSnapshot = await _firebaseRepository.getHomeBaseGPS();
+
+      Map<String, dynamic> valHomeBase = (homebaseSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
+
+      final LatLng homebase = LatLng(valHomeBase["lat"], valHomeBase["lng"]);
+
       // List<LatLng> path = await _firebaseRepository.getCutPath();
 
       // List<MarkerShort> markers = points.asMap()
@@ -164,7 +168,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       emit(
         state.copyWith(
           markers: markers,
-          homeBaseLocation: homeBaseLocation,
+          homeBaseLocation: homebase,
           loadStatus: CutAreaStatus.success,
           path: path,
         ),

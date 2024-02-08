@@ -17,7 +17,10 @@ class BatteryCubit extends Cubit<BatteryState> {
 
   void loadData() async {
     try {
-      Battery battery = await _firebaseRepository.getBatteryVal();
+      final snapshot = await _firebaseRepository.getBatteryVal();
+
+      Map<String, dynamic> value = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
+      Battery battery = Battery.fromMap(value);
 
       emit(BatterySuccess(battery: battery));
     } catch (e) {

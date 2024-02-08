@@ -18,10 +18,10 @@ void main() async {
 
   Bloc.observer = LawnmowerBlocObserver();
   runApp(
-    const App(
-      weatherRepository: WeatherRepository(),
+    App(
+      weatherRepository: const WeatherRepository(),
       firebaseRepository: FirebaseRepository(),
-      polyRepository: PolyRepository(),
+      polyRepository: const PolyRepository(),
     ),
   );
 }
