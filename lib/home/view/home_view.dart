@@ -84,12 +84,30 @@ class HomeView extends StatelessWidget {
             const SizedBox(height: 20),
             const Text("Mowing Session Ends at 23:00"),
             const SizedBox(height: 20),
+            Material(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.green,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  // TODO Start Robotic lawnmower.
+                },
+                child: const SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: Icon(
+                    Icons.start,
+                    size: 36,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).push(MapView.route(context));
               },
-              icon: const Icon(Icons.home),
+              icon: const Icon(Icons.location_on),
               label: const Text("Open Google Maps"),
             ),
           ],
