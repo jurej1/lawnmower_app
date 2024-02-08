@@ -67,25 +67,7 @@ class HomeView extends StatelessWidget {
             const SizedBox(height: 20),
             const Text("Mowing Session Ends at 23:00"),
             const SizedBox(height: 30),
-            LiteRollingSwitch(
-              width: 200,
-              value: false,
-              textOn: 'eating grass',
-              textOff: 'on vacation...',
-              colorOn: Colors.greenAccent.shade700,
-              colorOff: Colors.redAccent.shade700,
-              iconOn: Icons.check,
-              iconOff: Icons.beach_access,
-              // textSize: 16.0,
-              textOnColor: Colors.white,
-              onChanged: (bool state) {
-                // TODO use this one.
-                print("Changed");
-              },
-              onTap: () {},
-              onDoubleTap: () {},
-              onSwipe: () {},
-            ),
+            const StatusSwitch(),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

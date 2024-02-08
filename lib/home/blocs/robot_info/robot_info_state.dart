@@ -10,9 +10,9 @@ abstract class RobotInfoState extends Equatable {
 class RobotInfoLoading extends RobotInfoState {}
 
 class RobotInfoSucess extends RobotInfoState {
-  final RobotInfo workData;
+  final RobotInfo robotInfo;
 
-  const RobotInfoSucess({required this.workData});
+  const RobotInfoSucess({required this.robotInfo});
 }
 
 class RobotInfoFail extends RobotInfoState {}

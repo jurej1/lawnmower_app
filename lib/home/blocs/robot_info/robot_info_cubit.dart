@@ -31,7 +31,7 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
       Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
       RobotInfo workData = RobotInfo.fromMap(snapMap);
-      emit(RobotInfoSucess(workData: workData));
+      emit(RobotInfoSucess(robotInfo: workData));
     } catch (e) {
       log(e.toString());
       emit(RobotInfoFail());

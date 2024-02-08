@@ -16,9 +16,9 @@ class StatusTextDisplayer extends StatelessWidget {
           return Column(
             children: [
               Text(
-                mapStatusToText(state.workData.status),
+                mapStatusToText(state.robotInfo.status),
                 style: TextStyle(
-                  color: mapStatusToColor(state.workData.status),
+                  color: mapStatusToColor(state.robotInfo.status),
                   fontSize: 25,
                   fontWeight: FontWeight.w600,
                 ),
