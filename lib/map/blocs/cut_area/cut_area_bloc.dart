@@ -42,16 +42,15 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
   final FirebaseRepository _firebaseRepository;
   final PolyRepository _polyRepository;
-  final double stepSize = 1;
+  final double stepSize = 3;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
 
     newList = newList.map((e) {
       if (e.id == event.id) {
-        return MarkerShort(
+        return e.copyWith(
           position: event.finalPosition,
-          id: event.id,
         );
       }
       return e;
@@ -69,7 +68,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
   FutureOr<void> _mapAddMarkerToState(CutAreaAddMarker event, Emitter<CutAreaState> emit) {
     var newList = List<MarkerShort>.from(state.markers);
-    newList.add(MarkerShort(position: state.homeBaseLocation ?? state.userLocation, id: MarkerId(newList.length.toString())));
+    newList.add(MarkerShort(position: state.homeBaseLocation ?? state.userLocation, id: newList.length));
     final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
 
     emit(state.copyWith(markers: newList, path: path));
@@ -139,15 +138,26 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       LatLng homeBaseLocation = await _firebaseRepository.getHomeBaseGPS();
       // List<LatLng> path = await _firebaseRepository.getCutPath();
 
+      // List<MarkerShort> markers = points.asMap()
+      //     .map(
+      //       (e) => MarkerShort(
+      //         position: e,
+      //         id: MarkerId(
+      //           UniqueKey().toString(),
+      //         ),
+      //       ),
+      //     )
+      //     .toList();
+
       List<MarkerShort> markers = points
-          .map(
-            (e) => MarkerShort(
-              position: e,
-              id: MarkerId(
-                UniqueKey().toString(),
-              ),
+          .asMap()
+          .map<int, MarkerShort>(
+            (key, value) => MapEntry(
+              key,
+              MarkerShort(id: key, position: value),
             ),
           )
+          .values
           .toList();
 
       final path = _polyRepository.generatePathInsidePolygon(points, stepSize);

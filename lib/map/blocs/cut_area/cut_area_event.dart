@@ -15,7 +15,7 @@ class CutAreaRemoveMarker extends CutAreaEvent {}
 
 class CutAreaOnDragEnd extends CutAreaEvent {
   final LatLng finalPosition;
-  final MarkerId id;
+  final int id;
 
   const CutAreaOnDragEnd({required this.finalPosition, required this.id});
 }

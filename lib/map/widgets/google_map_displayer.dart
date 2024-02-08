@@ -32,27 +32,24 @@ class GoogleMapDisplayer extends StatelessWidget {
               target: state.homeBaseLocation ?? state.userLocation,
             ),
             markers: {
-              ...state.markers
-                  .map(
-                    (e) => Marker(
-                      infoWindow: InfoWindow(
-                        title: e.id.value.toString(),
-                      ),
-                      visible: !state.showPoly,
-                      markerId: e.id,
-                      position: e.position,
-                      draggable: true,
-                      onDragEnd: (val) {
-                        BlocProvider.of<CutAreaBloc>(context).add(
-                          CutAreaOnDragEnd(
-                            finalPosition: val,
-                            id: e.id,
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                  .toSet(),
+              ...state.markers.map(
+                (e) {
+                  return Marker(
+                    visible: !state.showPoly,
+                    markerId: MarkerId(e.id.toString()),
+                    position: e.position,
+                    draggable: true,
+                    onDragEnd: (val) {
+                      BlocProvider.of<CutAreaBloc>(context).add(
+                        CutAreaOnDragEnd(
+                          finalPosition: val,
+                          id: e.id,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ).toSet(),
               Marker(
                 markerId: const MarkerId("robot-position"),
                 position: state.homeBaseLocation!,

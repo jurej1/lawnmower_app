@@ -4,7 +4,7 @@ part of 'cut_area_bloc.dart';
 
 class MarkerShort extends Equatable {
   final LatLng position;
-  final MarkerId id;
+  final int id;
 
   const MarkerShort({
     required this.position,
@@ -16,7 +16,7 @@ class MarkerShort extends Equatable {
 
   MarkerShort copyWith({
     LatLng? position,
-    MarkerId? id,
+    int? id,
   }) {
     return MarkerShort(
       position: position ?? this.position,
