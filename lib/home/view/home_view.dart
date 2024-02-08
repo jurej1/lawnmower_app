@@ -1,4 +1,3 @@
-import 'package:based_battery_indicator/based_battery_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
 import 'package:weather_repository/weather_repository.dart';
 
-import '../../map/blocs/blocs.dart';
 import '../../map/view/view.dart';
 
 class HomeView extends StatelessWidget {

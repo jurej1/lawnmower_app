@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:based_battery_indicator/based_battery_indicator.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
