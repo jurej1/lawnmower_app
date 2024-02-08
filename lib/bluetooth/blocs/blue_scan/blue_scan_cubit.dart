@@ -7,7 +7,7 @@ class BlueScanCubit extends Cubit<BlueScanState> {
   BlueScanCubit() : super(const BlueScanState());
 
   void startScan() {
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 2));
     final subscription = FlutterBluePlus.onScanResults.listen((data) {
       emit(BlueScanState(data.map((e) => e.device).toList()));
     });

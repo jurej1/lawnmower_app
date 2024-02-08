@@ -32,59 +32,6 @@ class BluetoothView extends StatelessWidget {
   }
 }
 
-// class Discovery extends StatefulWidget {
-//   const Discovery({super.key});
-
-//   @override
-//   State<Discovery> createState() => _DiscoveryState();
-// }
-
-// class _DiscoveryState extends State<Discovery> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: StreamBuilder(
-//         stream: FlutterBluePlus.onScanResults,
-//         builder: (c, snapshot) {
-//           if (snapshot.data?.isEmpty ?? true) return Container();
-// return ListView.separated(
-//   itemCount: snapshot.data?.length ?? 0,
-//   itemBuilder: (c, i) {
-//     final item = snapshot.data![i].device;
-//     return ListTile(
-//       title: Text(
-//         item.remoteId.str,
-//         style: TextStyle(
-//           color: item.remoteId.str == "88:C2:55:D5:35:AE" ? Colors.red : Colors.black,
-//         ),
-//       ),
-//       onTap: () {
-//         item.connect().then((value) {
-//           log("connected");
-//         });
-//       },
-//     );
-//   },
-//   separatorBuilder: (c, i) {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(vertical: 5),
-//       color: Colors.black,
-//       height: 2,
-//     );
-//   },
-// );
-//         },
-//       ),
-//     );
-//   }
-// }
-
 class Discovery extends StatefulWidget {
   const Discovery({super.key});
 
@@ -106,7 +53,7 @@ class _DiscoveryState extends State<Discovery> {
                 title: Text(
                   item.remoteId.str,
                   style: TextStyle(
-                    color: item.remoteId.str == "88:C2:55:D5:35:AE" ? Colors.red : Colors.black,
+                    color: item.remoteId.str == "88:C2:55:D5:35:AE" ? Colors.red : Colors.white,
                   ),
                 ),
                 onTap: () async {

@@ -13,10 +13,15 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   BlueControlBloc(BluetoothDevice device) : super(BlueControlState(device)) {
     on<BlueControlInit>(_mapInitToState);
     on<BlueControlSetCuttingSpeed>(_mapSetCuttingSpeedToState);
-    on<BlueControlSetDrivingDirection>(_mapDrivingDirectionToState);
     on<BlueControlSetAdmin>(_mapSetAdminToState);
     on<BlueControlNotificationDetected>(_mapNotificationToState);
     on<BlueControlNotificationDisplayUpdated>(_mapNotificationDisplayUpdatedToState);
+
+    // Controls
+    on<BlueControlUpwardPressed>(_mapUpwardToState);
+    on<BlueControlDownwardPressed>(_mapDownwardToState);
+    on<BlueControlLeftPressed>(_mapLeftToState);
+    on<BlueControlRightPressed>(_mapRightToState);
   }
 
   StreamSubscription<List<int>>? listenSubscription;
@@ -58,19 +63,19 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
     }
   }
 
-  FutureOr<void> _mapDrivingDirectionToState(BlueControlSetDrivingDirection event, Emitter<BlueControlState> emit) async {
-    try {
-      if (state.isCharacteristicLoaded) {
-        final x = event.x * 100;
-        final y = event.y * 100;
-        String textToSend = "Dir: [x:${x.floor()}, y:${y.floor()}]";
-        List<int> data = utf8.encode(textToSend);
-        await state.writeCharacteristic!.write(data, withoutResponse: true);
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-  }
+  // FutureOr<void> _mapDrivingDirectionToState(BlueControlSetDrivingDirection event, Emitter<BlueControlState> emit) async {
+  // try {
+  //   if (state.isCharacteristicLoaded) {
+  //     final x = event.x * 100;
+  //     final y = event.y * 100;
+  //     String textToSend = "Dir: [x:${x.floor()}, y:${y.floor()}]";
+  //     List<int> data = utf8.encode(textToSend);
+  //     await state.writeCharacteristic!.write(data, withoutResponse: true);
+  //   }
+  // } catch (e) {
+  //   log(e.toString());
+  // }
+  // }
 
   FutureOr<void> _mapSetAdminToState(BlueControlSetAdmin event, Emitter<BlueControlState> emit) async {
     try {
@@ -120,5 +125,53 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
 
   FutureOr<void> _mapNotificationDisplayUpdatedToState(BlueControlNotificationDisplayUpdated event, Emitter<BlueControlState> emit) {
     emit(state.copyWith(hasNotificationBeenShown: event.val));
+  }
+
+  FutureOr<void> _mapUpwardToState(BlueControlUpwardPressed event, Emitter<BlueControlState> emit) async {
+    try {
+      if (state.isCharacteristicLoaded) {
+        String textToSend = "Dir: [x:100]";
+        List<int> data = utf8.encode(textToSend);
+        await state.writeCharacteristic!.write(data, withoutResponse: true);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  FutureOr<void> _mapDownwardToState(BlueControlDownwardPressed event, Emitter<BlueControlState> emit) async {
+    try {
+      if (state.isCharacteristicLoaded) {
+        String textToSend = "Dir: [x:-100]";
+        List<int> data = utf8.encode(textToSend);
+        await state.writeCharacteristic!.write(data, withoutResponse: true);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  FutureOr<void> _mapLeftToState(BlueControlLeftPressed event, Emitter<BlueControlState> emit) async {
+    try {
+      if (state.isCharacteristicLoaded) {
+        String textToSend = "Dir: [y:-100]";
+        List<int> data = utf8.encode(textToSend);
+        await state.writeCharacteristic!.write(data, withoutResponse: true);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  FutureOr<void> _mapRightToState(event, Emitter<BlueControlState> emit) async {
+    try {
+      if (state.isCharacteristicLoaded) {
+        String textToSend = "Dir: [y:100]";
+        List<int> data = utf8.encode(textToSend);
+        await state.writeCharacteristic!.write(data, withoutResponse: true);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

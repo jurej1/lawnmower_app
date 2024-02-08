@@ -43,12 +43,18 @@ class BlueControlSetCuttingSpeed extends BlueControlEvent {
   List<Object> get props => [speed];
 }
 
-class BlueControlSetDrivingDirection extends BlueControlEvent {
-  final double x;
-  final double y;
+class BlueControlUpwardPressed extends BlueControlEvent {
+  const BlueControlUpwardPressed();
+}
 
-  const BlueControlSetDrivingDirection({required this.x, required this.y});
+class BlueControlDownwardPressed extends BlueControlEvent {
+  const BlueControlDownwardPressed();
+}
 
-  @override
-  List<Object> get props => [x, y];
+class BlueControlLeftPressed extends BlueControlEvent {
+  const BlueControlLeftPressed();
+}
+
+class BlueControlRightPressed extends BlueControlEvent {
+  const BlueControlRightPressed();
 }

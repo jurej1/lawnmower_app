@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:lawnmower_app/bluetooth/blocs/blue_control/blue_control_bloc.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -53,40 +52,37 @@ class _ControlDeviceViewState extends State<ControlDeviceView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BlueControlBloc, BlueControlState>(
-      // listenWhen: (prev, current) {
-      // },
-      listener: (c, state) {
-        if (state.hasNotificationBeenShown == false) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-          final snackbar = SnackBar(
-            content: Text(state.notificationMessage),
-          );
-
-          ScaffoldMessenger.of(context).showSnackBar(snackbar);
-
-          BlocProvider.of<BlueControlBloc>(context).add(const BlueControlNotificationDisplayUpdated(val: true));
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(),
-        body: BlocBuilder<BlueControlBloc, BlueControlState>(
-          builder: (context, state) {
-            if (state.status == BlueConnectionStatus.connected) {
-              return const Stack(
+    return Scaffold(
+      appBar: AppBar(),
+      body: BlocBuilder<BlueControlBloc, BlueControlState>(
+        builder: (context, state) {
+          final size = MediaQuery.of(context).size;
+          if (state.status == BlueConnectionStatus.connected) {
+            return SizedBox(
+              height: size.height,
+              width: size.width,
+              child: const Stack(
+                alignment: Alignment.center,
                 children: [
-                  _CuttingSpeed(),
-                  _Joystick(),
+                  Positioned(
+                    left: 0,
+                    bottom: 400,
+                    top: 50,
+                    child: _CuttingSpeed(),
+                  ),
+                  Positioned(
+                    bottom: 90,
+                    child: _ControlPad(),
+                  ),
                 ],
-              );
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(),
+              ),
             );
-          },
-        ),
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }
@@ -106,50 +102,84 @@ class _CuttingSpeedState extends State<_CuttingSpeed> {
   Widget build(BuildContext context) {
     return BlocBuilder<BlueControlBloc, BlueControlState>(
       builder: (context, state) {
-        return Positioned(
-          left: 0,
-          bottom: 200,
-          top: 50,
-          child: SfSlider.vertical(
-            min: 0.0,
-            max: 100.0,
-            value: _val,
-            shouldAlwaysShowTooltip: true,
-            tooltipPosition: SliderTooltipPosition.right,
-            stepSize: 10.0,
-            onChangeEnd: (val) {
-              BlocProvider.of<BlueControlBloc>(context).add(BlueControlSetCuttingSpeed(speed: val));
-            },
-            onChanged: (val) {
-              setState(() {
-                _val = val;
-              });
-            },
-          ),
+        return SfSlider.vertical(
+          min: 0.0,
+          max: 100.0,
+          value: _val,
+          shouldAlwaysShowTooltip: true,
+          tooltipPosition: SliderTooltipPosition.right,
+          stepSize: 10.0,
+          onChangeEnd: (val) {
+            BlocProvider.of<BlueControlBloc>(context).add(BlueControlSetCuttingSpeed(speed: val));
+          },
+          onChanged: (val) {
+            setState(() {
+              _val = val;
+            });
+          },
         );
       },
     );
   }
 }
 
-class _Joystick extends StatelessWidget {
-  const _Joystick();
+class _ControlPad extends StatelessWidget {
+  const _ControlPad();
 
-  // CHANGE JOYSTICK TO SOMETHING ELSE.
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BlueControlBloc, BlueControlState>(
-      builder: (context, state) {
-        return Align(
-          alignment: const Alignment(0, 0.8),
-          child: Joystick(
-            mode: JoystickMode.horizontalAndVertical,
-            listener: (details) {
-              BlocProvider.of<BlueControlBloc>(context).add(BlueControlSetDrivingDirection(x: details.x, y: details.y));
+    return Container(
+      height: 270,
+      width: 300,
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buttonBuilder(
+            onPressed: () {
+              BlocProvider.of<BlueControlBloc>(context).add(const BlueControlLeftPressed());
             },
+            child: const Icon(Icons.arrow_back),
           ),
-        );
-      },
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buttonBuilder(
+                onPressed: () {
+                  BlocProvider.of<BlueControlBloc>(context).add(const BlueControlUpwardPressed());
+                },
+                child: const Icon(Icons.arrow_upward),
+              ),
+              _buttonBuilder(
+                onPressed: () {
+                  BlocProvider.of<BlueControlBloc>(context).add(const BlueControlDownwardPressed());
+                },
+                child: const Icon(Icons.arrow_downward),
+              ),
+            ],
+          ),
+          _buttonBuilder(
+            child: const Icon(Icons.arrow_forward),
+            onPressed: () {
+              BlocProvider.of<BlueControlBloc>(context).add(const BlueControlRightPressed());
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonBuilder({required Widget child, required VoidCallback onPressed}) {
+    return SizedBox(
+      height: 90,
+      width: 90,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: child,
+      ),
     );
   }
 }
