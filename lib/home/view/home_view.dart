@@ -83,20 +83,16 @@ class HomeView extends StatelessWidget {
                 image: DecorationImage(image: AssetImage('assets/rasen_roboter_catia.jpg')),
               ),
             ),
-
             const SizedBox(height: 20),
             const Text("Mowing Session Ends at 23:00"),
             const SizedBox(height: 20),
-            // const SizedBox(
-            //   height: 150,
-            //   child: _Chart(),
-            // ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).push(MapView.route(context));
               },
-              child: const Text("Open Google Maps"),
+              icon: const Icon(Icons.home),
+              label: const Text("Open Google Maps"),
             ),
           ],
         ),
