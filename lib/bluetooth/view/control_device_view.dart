@@ -9,8 +9,8 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class ControlDeviceView extends StatefulWidget {
   const ControlDeviceView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static route(BluetoothDevice device) {
     return MaterialPageRoute(
@@ -93,7 +93,7 @@ class _ControlDeviceViewState extends State<ControlDeviceView> {
 }
 
 class _CuttingSpeed extends StatefulWidget {
-  const _CuttingSpeed({super.key});
+  const _CuttingSpeed();
 
   @override
   State<_CuttingSpeed> createState() => _CuttingSpeedState();
@@ -133,7 +133,7 @@ class _CuttingSpeedState extends State<_CuttingSpeed> {
 }
 
 class _Joystick extends StatelessWidget {
-  const _Joystick({super.key});
+  const _Joystick();
 
   // CHANGE JOYSTICK TO SOMETHING ELSE.
   @override
@@ -156,9 +156,9 @@ class _Joystick extends StatelessWidget {
 
 class _Slider extends StatefulWidget {
   const _Slider({
-    Key? key,
+    super.key,
     required this.device,
-  }) : super(key: key);
+  });
 
   final BluetoothDevice device;
 

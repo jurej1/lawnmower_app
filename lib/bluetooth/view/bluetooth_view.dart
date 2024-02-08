@@ -6,7 +6,7 @@ import '../blocs/blue_scan/blue_scan_cubit.dart';
 // import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class BluetoothView extends StatelessWidget {
-  const BluetoothView({Key? key}) : super(key: key);
+  const BluetoothView({super.key});
 
   static route() {
     return MaterialPageRoute(

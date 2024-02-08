@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:vector_math/vector_math.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PolyRepository {
