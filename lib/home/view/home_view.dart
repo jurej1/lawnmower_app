@@ -105,12 +105,18 @@ class HomeView extends StatelessWidget {
               onSwipe: () {},
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(MapView.route(context));
-              },
-              icon: const Icon(Icons.location_on),
-              label: const Text("Open Google Maps"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                DhtDisplayer.provider(),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(MapView.route(context));
+                  },
+                  icon: const Icon(Icons.location_on),
+                  label: const Text("Open Google Maps"),
+                ),
+              ],
             ),
           ],
         ),
