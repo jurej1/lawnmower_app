@@ -98,6 +98,7 @@ class HomeView extends StatelessWidget {
               textOnColor: Colors.white,
               onChanged: (bool state) {
                 // TODO use this one.
+                print("Changed");
               },
               onTap: () {},
               onDoubleTap: () {},
