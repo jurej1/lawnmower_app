@@ -4,6 +4,7 @@ import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
 import 'package:weather_repository/weather_repository.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import '../../map/view/view.dart';
 
@@ -83,26 +84,26 @@ class HomeView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text("Mowing Session Ends at 23:00"),
-            const SizedBox(height: 20),
-            Material(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.green,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  // TODO Start Robotic lawnmower.
-                },
-                child: const SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: Icon(
-                    Icons.start,
-                    size: 36,
-                  ),
-                ),
-              ),
+            const SizedBox(height: 30),
+            LiteRollingSwitch(
+              width: 200,
+              value: false,
+              textOn: 'eating grass',
+              textOff: 'on vacation...',
+              colorOn: Colors.greenAccent.shade700,
+              colorOff: Colors.redAccent.shade700,
+              iconOn: Icons.check,
+              iconOff: Icons.beach_access,
+              // textSize: 16.0,
+              textOnColor: Colors.white,
+              onChanged: (bool state) {
+                // TODO use this one.
+              },
+              onTap: () {},
+              onDoubleTap: () {},
+              onSwipe: () {},
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).push(MapView.route(context));
