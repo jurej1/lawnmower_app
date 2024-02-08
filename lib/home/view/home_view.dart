@@ -1,7 +1,5 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
