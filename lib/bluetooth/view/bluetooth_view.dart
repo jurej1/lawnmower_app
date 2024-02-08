@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:lawnmower_app/bluetooth/view/control_device_view.dart';
 
 import '../blocs/blue_scan/blue_scan_cubit.dart';
@@ -100,7 +99,7 @@ class _DiscoveryState extends State<Discovery> {
       body: BlocBuilder<BlueScanCubit, BlueScanState>(
         builder: (c, state) {
           return ListView.separated(
-            itemCount: state.devices.length ?? 0,
+            itemCount: state.devices.length,
             itemBuilder: (c, i) {
               final item = state.devices[i];
               return ListTile(

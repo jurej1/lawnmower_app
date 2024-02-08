@@ -5,44 +5,68 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class PolyRepository {
   const PolyRepository();
 
-  /// Generates clear smooth path inside of the polygon, stepM should be in meters.
-  List<LatLng> generatePathInsidePolygon(List<LatLng> polygonPoints, double stepm) {
-    final stepSize = metersToStepSize(stepm);
-
+  List<LatLng> generatePathInsidePolygon(List<LatLng> polygonPoints, double stepM) {
     double minX = polygonPoints.map((e) => e.latitude).reduce(min);
     double maxX = polygonPoints.map((e) => e.latitude).reduce(max);
     double minY = polygonPoints.map((e) => e.longitude).reduce(min);
     double maxY = polygonPoints.map((e) => e.longitude).reduce(max);
 
-    List<LatLng> path = [];
+    double stepLat = metersToLatitude(stepM);
+    double stepLng = metersToLongitude(stepM, (minX + maxX) / 2);
 
-    double currentX = minX;
-    double currentY = minY;
+    List<LatLng> path = [];
     bool moveRight = true;
 
-    while (currentX <= maxX) {
+    for (double currentX = minX; currentX <= maxX; currentX += stepLat) {
       if (moveRight) {
-        while (currentY <= maxY) {
+        for (double currentY = minY; currentY <= maxY; currentY += stepLng) {
           LatLng point = LatLng(currentX, currentY);
           if (isPointInPolygon(point, polygonPoints)) {
             path.add(point);
           }
-          currentY += stepSize;
         }
       } else {
-        while (currentY >= minY) {
+        for (double currentY = maxY; currentY >= minY; currentY -= stepLng) {
           LatLng point = LatLng(currentX, currentY);
           if (isPointInPolygon(point, polygonPoints)) {
             path.add(point);
           }
-          currentY -= stepSize;
         }
       }
       moveRight = !moveRight;
-      currentX += stepSize;
     }
 
+    path = connectPoints(path);
+
     return path;
+  }
+
+  List<LatLng> connectPoints(List<LatLng> points) {
+    List<LatLng> connectedPath = [];
+
+    if (points.isEmpty) {
+      return connectedPath;
+    }
+
+    LatLng previousPoint = points.first;
+    connectedPath.add(previousPoint);
+
+    for (int i = 1; i < points.length; i++) {
+      LatLng currentPoint = points[i];
+      connectedPath.add(currentPoint);
+      previousPoint = currentPoint;
+    }
+
+    return connectedPath;
+  }
+
+  double metersToLatitude(double meters) {
+    return meters / 111320;
+  }
+
+  double metersToLongitude(double meters, double latitude) {
+    double latitudeRadians = latitude * pi / 180;
+    return meters / (111320 * cos(latitudeRadians));
   }
 
   bool isPointInPolygon(LatLng point, List<LatLng> polygonPoints) {
@@ -64,46 +88,6 @@ class PolyRepository {
     }
 
     return oddNodes;
-  }
-
-  double metersToStepSize(double meters) {
-    // 1 degree of latitude is approximately 111.32 km
-    // 1 degree of longitude is approximately 111.32 km * cos(latitude)
-    // 1 meter is approximately 1 / 111320 degree
-    // So, step size = meters / (111320 * cos(latitude))
-    double latitudeRadians = 46.686912 * pi / 180; // Assuming a latitude for conversion (change this to your specific latitude)
-    double stepSize = meters / (111320 * cos(latitudeRadians));
-    return stepSize;
-  }
-
-  bool isConvexPolygon(List<LatLng> vertices) {
-    int n = vertices.length;
-    if (n < 3) {
-      return false;
-    }
-
-    // Initialize sign to track the direction of turns
-    bool? sign;
-
-    // Iterate through each set of three consecutive vertices
-    for (int i = 0; i < n; i++) {
-      LatLng p1 = vertices[i];
-      LatLng p2 = vertices[(i + 1) % n];
-      LatLng p3 = vertices[(i + 2) % n];
-
-      // Calculate cross product of adjacent edges
-      double cross = (p2.longitude - p1.longitude) * (p3.latitude - p2.latitude) - (p2.latitude - p1.latitude) * (p3.longitude - p2.longitude);
-
-      // Determine the sign of the cross product
-      if (cross != 0) {
-        if (sign == null) {
-          sign = cross > 0;
-        } else if (sign != (cross > 0)) {
-          return false; // Sign changed, polygon is not convex
-        }
-      }
-    }
-    return true;
   }
 
   double calculatePathLength(List<LatLng> path) {
@@ -211,6 +195,7 @@ class PolyRepository {
   }
 
   double _calculateXSegment(double longitudeRef, double longitude, double latitude, double circumference) {
-    return (longitude - longitudeRef) * circumference * cos(radians(latitude)) / 360.0;
+    double latitudeInRadians = latitude * pi / 180;
+    return (longitude - longitudeRef) * circumference * cos(latitudeInRadians) / 360.0;
   }
 }

@@ -12,7 +12,7 @@ class BottomActionRow extends StatelessWidget {
       builder: (context, state) {
         return Row(
           children: [
-            if (state.isMapLoaded && state.isEnoughMarkers && false)
+            if (state.isMapLoaded && state.isEnoughMarkers)
               Container(
                 height: 100,
                 decoration: BoxDecoration(
