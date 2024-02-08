@@ -63,4 +63,12 @@ class FirebaseRepository {
   Future<DataSnapshot> getPathData() async {
     return _database.ref("path_data").get();
   }
+
+  Future<void> setRobotInfo(RobotInfo workData) async {
+    return _database.ref("robot_info").set(workData.toMap());
+  }
+
+  Future<DataSnapshot> getRobotInfo() async {
+    return _database.ref("robot_info").get();
+  }
 }

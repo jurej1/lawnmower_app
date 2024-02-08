@@ -1,3 +1,4 @@
+import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
@@ -18,6 +19,11 @@ class HomeView extends StatelessWidget {
           create: (context) => WeatherCubit(
             weatherRepository: RepositoryProvider.of<WeatherRepository>(context),
           )..getWeatherInfo(),
+        ),
+        BlocProvider(
+          create: (context) => RobotInfoCubit(
+            firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
+          )..loadData(),
         ),
       ],
       child: const HomeView(),
@@ -47,31 +53,7 @@ class HomeView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Mowing",
-              style: TextStyle(
-                color: Colors.green,
-                fontSize: 25,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 5),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                height: 5,
-                width: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade800,
-                ),
-                child: const FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  heightFactor: 1,
-                  widthFactor: 0.4,
-                  child: ColoredBox(color: Colors.green),
-                ),
-              ),
-            ),
+            const StatusTextDisplayer(),
             const SizedBox(height: 15),
             const _ActionRow(),
             const SizedBox(height: 20),
