@@ -63,20 +63,6 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
     }
   }
 
-  // FutureOr<void> _mapDrivingDirectionToState(BlueControlSetDrivingDirection event, Emitter<BlueControlState> emit) async {
-  // try {
-  //   if (state.isCharacteristicLoaded) {
-  //     final x = event.x * 100;
-  //     final y = event.y * 100;
-  //     String textToSend = "Dir: [x:${x.floor()}, y:${y.floor()}]";
-  //     List<int> data = utf8.encode(textToSend);
-  //     await state.writeCharacteristic!.write(data, withoutResponse: true);
-  //   }
-  // } catch (e) {
-  //   log(e.toString());
-  // }
-  // }
-
   FutureOr<void> _mapSetAdminToState(BlueControlSetAdmin event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
