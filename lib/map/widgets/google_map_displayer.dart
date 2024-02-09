@@ -51,7 +51,7 @@ class GoogleMapDisplayer extends StatelessWidget {
                 },
               ).toSet(),
               Marker(
-                markerId: const MarkerId("robot-position"),
+                markerId: const MarkerId("home-base-position"),
                 position: state.homeBaseLocation!,
                 visible: state.homeBaseLocation != null,
                 draggable: false,
