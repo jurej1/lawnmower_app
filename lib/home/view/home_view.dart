@@ -5,7 +5,6 @@ import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
 import 'package:weather_repository/weather_repository.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import '../../map/view/view.dart';
 
@@ -50,6 +49,7 @@ class HomeView extends StatelessWidget {
                 ),
                 const Spacer(),
                 const WeatherDisplayer(),
+                const SizedBox(width: 10),
               ],
             ),
             const SizedBox(height: 20),
@@ -110,7 +110,7 @@ class _ActionRow extends StatelessWidget {
         const SizedBox(width: 10),
         _verticalBox(),
         const SizedBox(width: 10),
-        BatteryDisplayer.provider(),
+        const BatteryDisplayer(),
       ],
     );
   }

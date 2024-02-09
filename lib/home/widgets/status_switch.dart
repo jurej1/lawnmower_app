@@ -21,11 +21,14 @@ class StatusSwitch extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               overlay: const Text("Let me charg nigga..."),
               child: IgnorePointer(
-                child: _switch(info: state.robotInfo),
+                child: _switch(info: state.robotInfo, context: context),
               ),
             );
           } else {
-            return _switch(info: state.robotInfo);
+            return _switch(
+              info: state.robotInfo,
+              context: context,
+            );
           }
         }
         return Container();
@@ -35,6 +38,7 @@ class StatusSwitch extends StatelessWidget {
 
   Widget _switch({
     required RobotInfo info,
+    required BuildContext context,
   }) {
     return LiteRollingSwitch(
       width: 200,
@@ -48,8 +52,7 @@ class StatusSwitch extends StatelessWidget {
       // textSize: 16.0,
       textOnColor: Colors.white,
       onChanged: (bool state) {
-        // TODO use this one.
-        print("Changed");
+        BlocProvider.of<RobotInfoCubit>(context).statusSwitchUpdated(state);
       },
       onTap: () {},
       onDoubleTap: () {},

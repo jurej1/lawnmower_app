@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 
@@ -17,14 +16,14 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
   void loadData() async {
     try {
-      await _firebaseRepository.setRobotInfo(
-        RobotInfo(
-          batteryState: 77,
-          status: RobotStatus.sleeping,
-          startTime: null,
-          estimatedEndTime: null,
-        ),
-      );
+      // await _firebaseRepository.setRobotInfo(
+      //   RobotInfo(
+      //     batteryState: 77,
+      //     status: RobotStatus.sleeping,
+      //     startTime: null,
+      //     estimatedEndTime: null,
+      //   ),
+      // );
 
       DataSnapshot snapshot = await _firebaseRepository.getRobotInfo();
 
@@ -35,6 +34,21 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
     } catch (e) {
       log(e.toString());
       emit(RobotInfoFail());
+    }
+  }
+
+  void statusSwitchUpdated(bool val) async {
+    if (state is RobotInfoSucess) {
+      final currentState = state as RobotInfoSucess;
+
+      final info = currentState.robotInfo.copyWith(
+        startTime: DateTime.now(),
+        status: val ? RobotStatus.mowing : RobotStatus.sleeping,
+      );
+
+      _firebaseRepository.setRobotInfo(info);
+
+      emit(RobotInfoSucess(robotInfo: info));
     }
   }
 }

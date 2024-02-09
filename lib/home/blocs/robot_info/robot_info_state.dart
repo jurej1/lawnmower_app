@@ -1,10 +1,7 @@
 part of 'robot_info_cubit.dart';
 
-abstract class RobotInfoState extends Equatable {
+abstract class RobotInfoState {
   const RobotInfoState();
-
-  @override
-  List<Object> get props => [];
 }
 
 class RobotInfoLoading extends RobotInfoState {}

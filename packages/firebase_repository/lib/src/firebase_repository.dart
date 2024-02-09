@@ -10,10 +10,6 @@ class FirebaseRepository {
 
   final FirebaseDatabase _database;
 
-  Future<DataSnapshot> getBatteryVal() async {
-    return _database.ref("battery").get();
-  }
-
   Future<void> setCutArea(List<LatLng> values) async {
     final jsonData = values
         .map((e) => {

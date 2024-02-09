@@ -7,31 +7,22 @@ import 'package:lawnmower_app/home/blocs/blocs.dart';
 class BatteryDisplayer extends StatelessWidget {
   const BatteryDisplayer({super.key});
 
-  static provider() {
-    return BlocProvider(
-      create: (context) => BatteryCubit(
-        firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
-      )..loadData(),
-      child: const BatteryDisplayer(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatteryCubit, BatteryState>(
+    return BlocBuilder<RobotInfoCubit, RobotInfoState>(
       builder: (context, state) {
-        if (state is BatterySuccess) {
+        if (state is RobotInfoSucess) {
           return BasedBatteryIndicator(
             status: BasedBatteryStatus(
-              value: state.battery.val,
-              type: state.battery.isCharging ? BasedBatteryStatusType.charging : BasedBatteryStatusType.normal,
+              value: state.robotInfo.batteryState,
+              type: state.robotInfo.status.isCharging ? BasedBatteryStatusType.charging : BasedBatteryStatusType.normal,
             ),
             trackHeight: 20.0,
             trackAspectRatio: 2.0,
             curve: Curves.ease,
             // duration: const Duration(second: 1),
           );
-        } else if (state is BatteryLoading) {
+        } else if (state is RobotInfoLoading) {
           return const CircularProgressIndicator();
         } else {
           return Container();

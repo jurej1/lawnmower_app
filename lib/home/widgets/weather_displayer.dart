@@ -11,21 +11,18 @@ class WeatherDisplayer extends StatelessWidget {
     return BlocBuilder<WeatherCubit, WeatherState>(
       builder: (context, state) {
         if (state is WeatherSuccess) {
-          return Column(
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("${state.weatherLocation.tempC.toStringAsFixed(1)} °C"),
-                  Image.asset(
-                    state.weatherLocation.iconPath,
-                    package: "weather_repository",
-                    height: 50,
-                  ),
-                  Text(state.weatherLocation.conditionText),
-                  const SizedBox(width: 10),
-                ],
+              Text("${state.weatherLocation.tempC.toStringAsFixed(1)} °C"),
+              const SizedBox(width: 6),
+              Image.asset(
+                state.weatherLocation.iconPath,
+                package: "weather_repository",
+                height: 50,
               ),
+              const SizedBox(width: 6),
+              Text(state.weatherLocation.conditionText),
             ],
           );
         }
