@@ -25,6 +25,11 @@ class HomeView extends StatelessWidget {
             firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
           )..loadData(),
         ),
+        BlocProvider(
+          create: (context) => RobotLocationCubit(
+            firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
+          )..loadData(),
+        ),
       ],
       child: const HomeView(),
     );
@@ -66,7 +71,7 @@ class HomeView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const SessionEndText(),
+            const SessionText(),
             const SizedBox(height: 30),
             const StatusSwitch(),
             const SizedBox(height: 30),
@@ -90,32 +95,6 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class SessionEndText extends StatelessWidget {
-  const SessionEndText({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RobotInfoCubit, RobotInfoState>(
-      builder: (context, state) {
-        if (state is RobotInfoSucess) {
-          if (state.robotInfo.status.isCharging) {
-            return Container();
-          } else if (state.robotInfo.status.isMowing) {
-            if (state.robotInfo.estimatedEndTime == null) return Container();
-            return Text("Mowing session ends at: ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
-          } else if (state.robotInfo.status.isSleeping) {
-            if (state.robotInfo.estimatedEndTime == null) return Container();
-            return Text("If Start Now mowing would end at: ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
-          }
-        }
-        return Container();
-      },
-    );
-  }
-}
-
 class _ActionRow extends StatelessWidget {
   const _ActionRow({
     super.key,
@@ -132,8 +111,7 @@ class _ActionRow extends StatelessWidget {
         const SizedBox(width: 10),
         _verticalBox(),
         const SizedBox(width: 10),
-        const Icon(Icons.location_on),
-        const Text("Front yard"),
+        const RobotLocationIcon(),
         const SizedBox(width: 10),
         _verticalBox(),
         const SizedBox(width: 10),
@@ -147,6 +125,31 @@ class _ActionRow extends StatelessWidget {
       width: 1,
       height: 20,
       color: Colors.grey,
+    );
+  }
+}
+
+class RobotLocationIcon extends StatelessWidget {
+  const RobotLocationIcon({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RobotLocationCubit, RobotLocationState>(
+      builder: (context, state) {
+        if (state is RobotLocationSuccess) {
+          bool isHome = state.isOnBase;
+          return Row(
+            children: [
+              Icon(isHome ? Icons.home : Icons.location_on),
+              const SizedBox(width: 5),
+              Text(isHome ? "In base" : "Front yard"),
+            ],
+          );
+        }
+        return Container();
+      },
     );
   }
 }
