@@ -66,7 +66,7 @@ class HomeView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            SessionEndText(),
+            const SessionEndText(),
             const SizedBox(height: 30),
             const StatusSwitch(),
             const SizedBox(height: 30),

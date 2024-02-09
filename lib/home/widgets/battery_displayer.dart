@@ -12,15 +12,21 @@ class BatteryDisplayer extends StatelessWidget {
     return BlocBuilder<RobotInfoCubit, RobotInfoState>(
       builder: (context, state) {
         if (state is RobotInfoSucess) {
-          return BasedBatteryIndicator(
-            status: BasedBatteryStatus(
-              value: state.robotInfo.batteryState,
-              type: state.robotInfo.status.isCharging ? BasedBatteryStatusType.charging : BasedBatteryStatusType.normal,
-            ),
-            trackHeight: 20.0,
-            trackAspectRatio: 2.0,
-            curve: Curves.ease,
-            // duration: const Duration(second: 1),
+          return Row(
+            children: [
+              BasedBatteryIndicator(
+                status: BasedBatteryStatus(
+                  value: state.robotInfo.batteryState,
+                  type: state.robotInfo.status.isCharging ? BasedBatteryStatusType.charging : BasedBatteryStatusType.normal,
+                ),
+                trackHeight: 20.0,
+                trackAspectRatio: 2.0,
+                curve: Curves.fastLinearToSlowEaseIn,
+                duration: const Duration(seconds: 1),
+              ),
+              const SizedBox(width: 5),
+              Text("${state.robotInfo.batteryState}%")
+            ],
           );
         } else if (state is RobotInfoLoading) {
           return const CircularProgressIndicator();

@@ -16,15 +16,6 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
   void loadData() async {
     try {
-      // await _firebaseRepository.setRobotInfo(
-      //   RobotInfo(
-      //     batteryState: 77,
-      //     status: RobotStatus.sleeping,
-      //     startTime: null,
-      //     estimatedEndTime: null,
-      //   ),
-      // );
-
       DataSnapshot snapshot = await _firebaseRepository.getRobotInfo();
 
       Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
