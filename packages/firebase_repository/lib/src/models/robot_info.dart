@@ -19,47 +19,61 @@ class RobotInfo extends Equatable {
   final RobotStatus status;
   final int batteryState;
   final DateTime? startTime;
-  final DateTime? estimatedEndTime;
+  final double area;
+  final Duration estimatedDuration;
 
   const RobotInfo({
     required this.status,
-    required this.startTime,
-    required this.estimatedEndTime,
     required this.batteryState,
+    required this.startTime,
+    required this.area,
+    required this.estimatedDuration,
   });
 
   @override
-  List<Object?> get props => [status, startTime, estimatedEndTime, batteryState];
+  List<Object?> get props {
+    return [
+      status,
+      batteryState,
+      startTime,
+      area,
+      estimatedDuration,
+    ];
+  }
 
   RobotInfo copyWith({
     RobotStatus? status,
-    DateTime? startTime,
-    DateTime? estimatedEndTime,
     int? batteryState,
+    DateTime? startTime,
+    double? area,
+    Duration? estimatedDuration,
   }) {
     return RobotInfo(
       status: status ?? this.status,
-      startTime: startTime ?? this.startTime,
-      estimatedEndTime: estimatedEndTime ?? this.estimatedEndTime,
       batteryState: batteryState ?? this.batteryState,
+      startTime: startTime ?? this.startTime,
+      area: area ?? this.area,
+      estimatedDuration: estimatedDuration ?? this.estimatedDuration,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'status': status.name,
-      'startTime': startTime?.millisecondsSinceEpoch,
-      'estimatedEndTime': estimatedEndTime?.millisecondsSinceEpoch,
       'batteryState': batteryState,
+      'startTime': startTime?.millisecondsSinceEpoch,
+      'area': area,
+      'estimatedDuration': estimatedDuration.inSeconds,
     };
   }
 
   factory RobotInfo.fromMap(Map<String, dynamic> map) {
     return RobotInfo(
       status: RobotStatus.values.firstWhere((element) => element.name == map['status']),
-      startTime: map['startTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['startTime'] as int) : null,
-      estimatedEndTime: map['estimatedEndTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['estimatedEndTime'] as int) : null,
       batteryState: map['batteryState'] as int,
+      startTime: map['startTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['startTime'] as int) : null,
+      area: map['area'] as double,
+      estimatedDuration: Duration(seconds: map['estimatedDuration']),
     );
   }
 
@@ -69,4 +83,6 @@ class RobotInfo extends Equatable {
 
   @override
   bool get stringify => true;
+
+  DateTime? get estimatedEndTime => startTime?.add(estimatedDuration);
 }

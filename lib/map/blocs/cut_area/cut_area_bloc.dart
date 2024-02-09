@@ -94,22 +94,26 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       emit(state.copyWith(submitStatus: CutAreaStatus.loading));
       List<LatLng> points = state.markers.map((e) => e.position).toList();
 
-      await _firebaseRepository.setCutArea(points);
-
       if (state.path != null) {
         List<LatLng> path = _polyRepository.generatePathInsidePolygon(points, stepSize);
         emit(state.copyWith(path: path));
       }
 
-      await _firebaseRepository.setCutPath(state.path!);
-
       PathData pathData = PathData(
         cutArea: state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
-        duration: Duration(seconds: state.calculateMowingTime()),
+        duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
         length: state.calculatePathLength(),
       );
 
-      await _firebaseRepository.setPathData(pathData);
+      await Future.wait([
+        _firebaseRepository.setPathData(pathData),
+        _firebaseRepository.setCutPath(state.path!),
+        _firebaseRepository.setMowingDurationAndArea(
+          Duration(seconds: state.calculateMowingTimeInSeconds()),
+          state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
+        ),
+        _firebaseRepository.setCutArea(points),
+      ]);
 
       emit(state.copyWith(submitStatus: CutAreaStatus.success));
     } catch (e) {

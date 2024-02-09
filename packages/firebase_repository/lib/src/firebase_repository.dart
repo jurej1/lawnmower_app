@@ -64,6 +64,13 @@ class FirebaseRepository {
     return _database.ref("robot_info").set(workData.toMap());
   }
 
+  Future<void> setMowingDurationAndArea(Duration duration, double area) async {
+    return _database.ref("robot_info").update({
+      "estimatedDuration": duration.inSeconds,
+      "area": area,
+    });
+  }
+
   Future<DataSnapshot> getRobotInfo() async {
     return _database.ref("robot_info").get();
   }
