@@ -111,9 +111,7 @@ class HomeView extends StatelessWidget {
 }
 
 class _ActionRow extends StatelessWidget {
-  const _ActionRow({
-    super.key,
-  });
+  const _ActionRow({super.key});
 
   @override
   Widget build(BuildContext context) {
