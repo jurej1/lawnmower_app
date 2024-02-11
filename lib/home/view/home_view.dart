@@ -39,55 +39,71 @@ class HomeView extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        child: Column(
-          children: [
-            const SizedBox(height: 60),
-            Row(
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future.wait(
+            [
+              BlocProvider.of<WeatherCubit>(context).getWeatherInfo(),
+              BlocProvider.of<RobotInfoCubit>(context).loadData(),
+              BlocProvider.of<RobotLocationCubit>(context).loadData(),
+            ],
+          );
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: size.height,
+            width: size.width,
+            child: Column(
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(BluetoothView.route());
-                  },
-                  child: const Text('BLE'),
+                const SizedBox(height: 60),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(BluetoothView.route());
+                      },
+                      child: const Text('BLE'),
+                    ),
+                    const Spacer(),
+                    const WeatherDisplayer(),
+                    const SizedBox(width: 10),
+                  ],
                 ),
-                const Spacer(),
-                const WeatherDisplayer(),
-                const SizedBox(width: 10),
+                const SizedBox(height: 20),
+                const StatusTextDisplayer(),
+                const SizedBox(height: 15),
+                const _ActionRow(),
+                const SizedBox(height: 20),
+                Container(
+                  height: 210,
+                  width: size.width,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(image: AssetImage('assets/rasen_roboter_catia.jpg')),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const SessionText(),
+                const SizedBox(height: 30),
+                const StatusSwitch(),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    DhtDisplayer.provider(),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(MapView.route(context));
+                      },
+                      icon: const Icon(Icons.location_on),
+                      label: const Text("Open Google Maps"),
+                    ),
+                  ],
+                ),
               ],
             ),
-            const SizedBox(height: 20),
-            const StatusTextDisplayer(),
-            const SizedBox(height: 15),
-            const _ActionRow(),
-            const SizedBox(height: 20),
-            Container(
-              height: 210,
-              width: size.width,
-              decoration: const BoxDecoration(
-                image: DecorationImage(image: AssetImage('assets/rasen_roboter_catia.jpg')),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const SessionText(),
-            const SizedBox(height: 30),
-            const StatusSwitch(),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                DhtDisplayer.provider(),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(MapView.route(context));
-                  },
-                  icon: const Icon(Icons.location_on),
-                  label: const Text("Open Google Maps"),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );

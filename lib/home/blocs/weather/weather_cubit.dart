@@ -13,7 +13,6 @@ class WeatherCubit extends Cubit<WeatherState> {
   final WeatherRepository _weatherRepository;
 
   Future<void> getWeatherInfo() async {
-    emit(WeatherLoading());
     try {
       // for this function do JSON response to Class Dart.
       WeatherLocation? location = await _weatherRepository.getCurrentData("Murska Sobota");

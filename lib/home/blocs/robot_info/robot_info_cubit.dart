@@ -14,7 +14,7 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
   final FirebaseRepository _firebaseRepository;
 
-  void loadData() async {
+  Future<void> loadData() async {
     try {
       DataSnapshot snapshot = await _firebaseRepository.getRobotInfo();
 
