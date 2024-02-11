@@ -115,6 +115,8 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         _firebaseRepository.setCutArea(points),
       ]);
 
+      // TODO Update other blocs once this is done.
+
       emit(state.copyWith(submitStatus: CutAreaStatus.success));
     } catch (e) {
       emit(state.copyWith(submitStatus: CutAreaStatus.fail));
@@ -158,19 +160,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       final homebaseSnapshot = await _firebaseRepository.getHomeBaseGPS();
       Map<String, dynamic> valHomeBase = (homebaseSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
       final LatLng homebase = LatLng(valHomeBase["lat"], valHomeBase["lng"]);
-
-      // List<LatLng> path = await _firebaseRepository.getCutPath();
-
-      // List<MarkerShort> markers = points.asMap()
-      //     .map(
-      //       (e) => MarkerShort(
-      //         position: e,
-      //         id: MarkerId(
-      //           UniqueKey().toString(),
-      //         ),
-      //       ),
-      //     )
-      //     .toList();
 
       final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
       emit(

@@ -47,6 +47,7 @@ class RobotInfo extends Equatable {
     DateTime? startTime,
     double? area,
     Duration? estimatedDuration,
+    bool? isON,
   }) {
     return RobotInfo(
       status: status ?? this.status,
@@ -64,6 +65,7 @@ class RobotInfo extends Equatable {
       'startTime': startTime?.millisecondsSinceEpoch,
       'area': area,
       'estimatedDuration': estimatedDuration.inSeconds,
+      'isON': status.isMowing,
     };
   }
 
