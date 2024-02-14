@@ -66,7 +66,7 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapSetAdminToState(BlueControlSetAdmin event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
-        String textToSend = "Admin:User";
+        String textToSend = "Admin:User" + "\n";
         List<int> data = utf8.encode(textToSend);
         await state.writeCharacteristic!.write(data, withoutResponse: true);
       }
@@ -116,7 +116,7 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapUpwardToState(BlueControlUpwardPressed event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
-        String textToSend = "Dir: { \"x\": 100, \"y\": 0 }";
+        String textToSend = "Dir: { \"x\": 100, \"y\": 0 }" + "\n";
         List<int> data = utf8.encode(textToSend);
         await state.writeCharacteristic!.write(data, withoutResponse: true);
       }
@@ -128,7 +128,7 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapDownwardToState(BlueControlDownwardPressed event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
-        String textToSend = "Dir: { \"x\": -100, \"y\": 0 }";
+        String textToSend = "Dir: { \"x\": -100, \"y\": 0 }\n" + "\n";
         List<int> data = utf8.encode(textToSend);
         await state.writeCharacteristic!.write(data, withoutResponse: true);
       }
@@ -140,7 +140,7 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapLeftToState(BlueControlLeftPressed event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
-        String textToSend = "Dir: { \"x\": 0, \"y\": -100 }";
+        String textToSend = "Dir: { \"x\": 0, \"y\": -100 }" + "\n";
         List<int> data = utf8.encode(textToSend);
         await state.writeCharacteristic!.write(data, withoutResponse: true);
       }
@@ -152,7 +152,7 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapRightToState(event, Emitter<BlueControlState> emit) async {
     try {
       if (state.isCharacteristicLoaded) {
-        String textToSend = "Dir: { \"x\": 0, \"y\": 100 }";
+        String textToSend = "Dir: { \"x\": 0, \"y\": 100 }" + "\n";
         List<int> data = utf8.encode(textToSend);
         await state.writeCharacteristic!.write(data, withoutResponse: true);
       }
