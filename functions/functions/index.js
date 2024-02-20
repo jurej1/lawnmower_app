@@ -25,10 +25,10 @@ exports.generatePathInsidePolygon = functions.https.onRequest(
         const path = generatePathInsidePolygon(polygonPoints, stepM);
 
         // Respond with the generated path
-        return response.status(200).json({path});
+        response.status(200).json({path});
       } catch (error) {
         logger.error("Error generating path in polygon", error);
-        return response.status(500).send("Error generating path in polygon");
+        response.status(500).send("Error generating path in polygon");
       }
     });
 
