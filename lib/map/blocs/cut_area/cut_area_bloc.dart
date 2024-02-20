@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 part 'cut_area_event.dart';
 part 'cut_area_state.dart';
@@ -161,13 +164,24 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       Map<String, dynamic> valHomeBase = (homebaseSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
       final LatLng homebase = LatLng(valHomeBase["lat"], valHomeBase["lng"]);
 
-      final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
+      // final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
+      await generatePathInsidePolygon(
+          points
+              .map(
+                (e) => {
+                  "lat": e.latitude,
+                  "lng": e.longitude,
+                },
+              )
+              .toList(),
+          stepSize);
+
       emit(
         state.copyWith(
           markers: markers,
           homeBaseLocation: homebase,
           loadStatus: CutAreaStatus.success,
-          path: path,
+          // path: path,
         ),
       );
     } catch (e) {
@@ -192,5 +206,39 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         showPoly: newShowPath == true ? true : null,
       ),
     );
+  }
+
+  Future<void> generatePathInsidePolygon(List<Map<String, double>> points, double stepSize) async {
+    // Define the URL of the server function
+    const String url = 'https://us-central1-lawnmower-825c3.cloudfunctions.net/generatePathInsidePolygon';
+
+    // Construct the request body
+    final Map<String, dynamic> requestBody = {
+      'polygonPoints': points,
+      'stepM': stepSize,
+    };
+
+    try {
+      // Make the POST request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(requestBody),
+      );
+
+      // Check the response status code
+      if (response.statusCode == 200) {
+        // Parse the response data
+        final responseData = json.decode(response.body);
+        // Use the responseData for your path
+        log("Response: $responseData");
+      } else {
+        // Handle the case where the server returns a non-200 status code
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      // Handle any errors that occur during the request
+      print('Error making the request: $e');
+    }
   }
 }

@@ -17,7 +17,8 @@
     "axios": "^1.6.7",
     "firebase-admin": "^11.8.0",
     "firebase-functions": "^4.3.1",
-    "geolib": "^3.3.4"
+    "geolib": "^3.3.4",
+    "turf": "^3.0.14"
   },
   "devDependencies": {
     "eslint": "^8.15.0",

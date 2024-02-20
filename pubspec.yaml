@@ -26,6 +26,7 @@ dependencies:
   flutter_blue_plus: ^1.31.13
   flutter_bluetooth_serial: ^0.4.0
   google_maps_flutter: ^2.5.3
+  http: ^0.13.6
   intl: ^0.18.0
   lite_rolling_switch: ^1.0.1
   location: ^5.0.3

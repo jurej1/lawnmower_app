@@ -1,115 +1,61 @@
 const functions = require("firebase-functions");
-const {logger} = require("firebase-functions");
-const geolib = require("geolib");
+const turf = require("turf/turf");
 
+exports.generatePathInsidePolygon = functions.https.onRequest((
+    request, response) => {
+  // Ensure that the request is a POST request
+  if (request.method !== "POST") {
+    return response.status(405).send("Method Not Allowed");
+  }
 
-exports.generatePathInsidePolygon = functions.https.onRequest(
-    (request, response) => {
-      try {
-        // Ensure we're dealing with a POST request
-        if (request.method !== "POST") {
-          return response.status(405).send("Method Not Allowed");
-        }
+  const polygonCoordinates = request.body.polygon;
+  const mowerWidth = request.body.mowerWidth;
 
-        const polygonPoints = request.body.polygonPoints;
-        const stepM = request.body.stepM;
+  if (!polygonCoordinates || !Array.isArray(polygonCoordinates) ||
+    polygonCoordinates.length === 0) {
+    return response.status(400).send("Invalid polygon coordinates");
+  }
+  if (!mowerWidth || typeof mowerWidth !== "number" || mowerWidth <= 0) {
+    return response.status(400).send("Invalid mower width");
+  }
 
-        // Validate the input data
-        if (!Array.isArray(polygonPoints) || polygonPoints.length < 3 ||
-                typeof stepM !== "number") {
-          logger.error("Invalid input data");
-          return response.status(400).send("Invalid input data");
-        }
+  // Create a Turf.js polygon
+  const lawnPolygon = turf.polygon([polygonCoordinates]);
 
-        // Call the function to generate the path inside the polygon
-        const path = generatePathInsidePolygon(polygonPoints, stepM);
+  // Create a grid of points to represent potential path points
+  const pointsGrid = turf.pointGrid(turf.bbox(lawnPolygon),
+      mowerWidth, {units: "meters"});
 
-        // Respond with the generated path
-        response.status(200).json({path});
-      } catch (error) {
-        logger.error("Error generating path in polygon", error);
-        response.status(500).send("Error generating path in polygon");
-      }
-    });
+  // Filter the points to only those that are inside the lawn polygon
+  const pointsInside = turf.pointsWithinPolygon(pointsGrid, lawnPolygon);
 
-exports.sayHello = functions.https.onRequest((req, res) => {
-  const origin = req.get("Origin");
-  const allowedOrigins = [/firebase\.com$/, "flutter.com"];
-
-  // Check if the origin is allowed
-  const isAllowed = allowedOrigins.some((allowedOrigin) => {
-    return typeof allowedOrigin === "string" ?
-            origin === allowedOrigin :
-            allowedOrigin.test(origin);
+  // Convert the points to a path
+  let pathCoordinates = [];
+  pointsInside.features.forEach((point, index) => {
+    pathCoordinates.push(point.geometry.coordinates);
   });
 
-  if (isAllowed) {
-    res.set("Access-Control-Allow-Origin", origin);
-  }
+  // Sort the path coordinates in a boustrophedon pattern
+  pathCoordinates = sortBoustrophedon(pathCoordinates);
 
-  res.status(200).send("Hello world!");
+  // Return the path as a GeoJSON LineString
+  const pathGeoJSON = turf.lineString(pathCoordinates);
+
+  // Send the generated path back in the response
+  response.status(200).send(pathGeoJSON);
 });
 
-
-function generatePathInsidePolygon(polygonPoints, stepM) {
-  const minX = Math.min(...polygonPoints.map((p) => p.latitude));
-  const maxX = Math.max(...polygonPoints.map((p) => p.latitude));
-  const minY = Math.min(...polygonPoints.map((p) => p.longitude));
-  const maxY = Math.max(...polygonPoints.map((p) => p.longitude));
-
-  const stepLat = metersToLatitude(stepM);
-  const stepLng = metersToLongitude(stepM, (minX + maxX) / 2);
-
-  const path = [];
-  let moveRight = true;
-
-  for (let currentX = minX; currentX <= maxX; currentX += stepLat) {
-    if (moveRight) {
-      for (let currentY = minY; currentY <= maxY; currentY += stepLng) {
-        const point = {latitude: currentX, longitude: currentY};
-        if (geolib.isPointInside(point, polygonPoints)) {
-          path.push(point);
-        }
-      }
+// Function to sort path coordinates in a boustrophedon pattern
+function sortBoustrophedon(coordinates) {
+  const sortedCoordinates = [];
+  coordinates.forEach((coord, index) => {
+    if (index % 2 === 0) {
+      // For even-indexed coordinates, keep them as they are
+      sortedCoordinates.push(coord);
     } else {
-      for (let currentY = maxY; currentY >= minY; currentY -= stepLng) {
-        const point = {latitude: currentX, longitude: currentY};
-        if (geolib.isPointInside(point, polygonPoints)) {
-          path.push(point);
-        }
-      }
+      // For odd-indexed coordinates, reverse their order
+      sortedCoordinates.push(coord.reverse());
     }
-    moveRight = !moveRight;
-  }
-
-  return connectPoints(path);
+  });
+  return sortedCoordinates;
 }
-
-function connectPoints(points) {
-  const connectedPath = [];
-
-  if (points.length === 0) {
-    return connectedPath;
-  }
-
-  let previousPoint = points[0];
-  connectedPath.push(previousPoint);
-
-  for (let i = 1; i < points.length; i++) {
-    const currentPoint = points[i];
-    connectedPath.push(currentPoint);
-    previousPoint = currentPoint;
-  }
-
-  return connectedPath;
-}
-
-function metersToLatitude(meters) {
-  return meters / 111320;
-}
-
-function metersToLongitude(meters, latitude) {
-  const latitudeRadians = latitude * Math.PI / 180;
-  return meters / (111320 * Math.cos(latitudeRadians));
-}
-
