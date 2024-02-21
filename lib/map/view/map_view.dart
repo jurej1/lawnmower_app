@@ -5,8 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:lawnmower_app/map/widgets/widgets.dart';
 
-import 'package:poly_repository/poly_repository.dart';
-
 class MapView extends StatelessWidget {
   const MapView({super.key});
 
@@ -59,7 +57,6 @@ class _BodyBuilder extends StatefulWidget {
       create: (context) => CutAreaBloc(
         userLocation: userLocation,
         firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
-        polyRepository: RepositoryProvider.of<PolyRepository>(context),
       )..add(CutAreaInit()),
       child: _BodyBuilder(),
     );

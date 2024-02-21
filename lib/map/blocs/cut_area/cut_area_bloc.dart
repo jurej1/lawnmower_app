@@ -15,9 +15,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   CutAreaBloc({
     required LatLng userLocation,
     required FirebaseRepository firebaseRepository,
-    required PolyRepository polyRepository,
   })  : _firebaseRepository = firebaseRepository,
-        _polyRepository = polyRepository,
         super(
           CutAreaState(
             loadStatus: CutAreaStatus.initial,
@@ -41,10 +39,9 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   }
 
   final FirebaseRepository _firebaseRepository;
-  final PolyRepository _polyRepository;
   final double stepSize = 3;
 
-  FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) {
+  FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);
 
     newList = newList.map((e) {
@@ -56,7 +53,17 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       return e;
     }).toList();
 
-    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+    final path = await generatePathInsidePolygon(
+      newList
+          .map(
+            (e) => {
+              "lat": e.position.latitude,
+              "lng": e.position.longitude,
+            },
+          )
+          .toList(),
+      stepSize,
+    );
 
     emit(
       state.copyWith(
@@ -66,10 +73,21 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     );
   }
 
-  FutureOr<void> _mapAddMarkerToState(CutAreaAddMarker event, Emitter<CutAreaState> emit) {
+  FutureOr<void> _mapAddMarkerToState(CutAreaAddMarker event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);
     newList.add(MarkerShort(position: state.homeBaseLocation ?? state.userLocation, id: newList.length));
-    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+
+    final path = await generatePathInsidePolygon(
+      newList
+          .map(
+            (e) => {
+              "lat": e.position.latitude,
+              "lng": e.position.longitude,
+            },
+          )
+          .toList(),
+      stepSize,
+    );
 
     emit(state.copyWith(markers: newList, path: path));
   }
@@ -78,10 +96,20 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     emit(state.copyWith(showPoly: !state.showPoly));
   }
 
-  FutureOr<void> _mapRemoveMarkerToState(CutAreaRemoveMarker event, Emitter<CutAreaState> emit) {
+  FutureOr<void> _mapRemoveMarkerToState(CutAreaRemoveMarker event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);
     newList.removeAt(newList.length - 1);
-    final path = _polyRepository.generatePathInsidePolygon(newList.map((e) => e.position).toList(), stepSize);
+    final path = await generatePathInsidePolygon(
+      newList
+          .map(
+            (e) => {
+              "lat": e.position.latitude,
+              "lng": e.position.longitude,
+            },
+          )
+          .toList(),
+      stepSize,
+    );
 
     emit(
       state.copyWith(
@@ -97,7 +125,18 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       List<LatLng> points = state.markers.map((e) => e.position).toList();
 
       if (state.path != null) {
-        List<LatLng> path = _polyRepository.generatePathInsidePolygon(points, stepSize);
+        final path = await generatePathInsidePolygon(
+          points
+              .map(
+                (e) => {
+                  "lat": e.latitude,
+                  "lng": e.longitude,
+                },
+              )
+              .toList(),
+          stepSize,
+        );
+
         emit(state.copyWith(path: path));
       }
 

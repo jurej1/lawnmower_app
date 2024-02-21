@@ -68,32 +68,32 @@ class GoogleMapDisplayer extends StatelessWidget {
                 points: state.path ?? [],
                 startCap: Cap.roundCap,
               ),
-              // Polyline(
-              //   polylineId: const PolylineId("start-path"),
-              //   color: Colors.blue,
-              //   endCap: Cap.roundCap,
-              //   visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
-              //   patterns: [
-              //     PatternItem.dot,
-              //     PatternItem.gap(5),
-              //   ],
-              //   width: 2,
-              //   points: state.getMoveToStartPath(),
-              //   startCap: Cap.roundCap,
-              // ),
-              // Polyline(
-              //   polylineId: const PolylineId("end-path"),
-              //   color: Colors.blue.shade200,
-              //   endCap: Cap.roundCap,
-              //   width: 2,
-              //   visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
-              //   patterns: [
-              //     PatternItem.dot,
-              //     PatternItem.gap(5),
-              //   ],
-              //   points: state.getMoveHomePath(),
-              //   startCap: Cap.roundCap,
-              // ),
+              Polyline(
+                polylineId: const PolylineId("start-path"),
+                color: Colors.blue,
+                endCap: Cap.roundCap,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
+                patterns: [
+                  PatternItem.dot,
+                  PatternItem.gap(5),
+                ],
+                width: 2,
+                points: state.getMoveToStartPath(),
+                startCap: Cap.roundCap,
+              ),
+              Polyline(
+                polylineId: const PolylineId("end-path"),
+                color: Colors.blue.shade200,
+                endCap: Cap.roundCap,
+                width: 2,
+                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
+                patterns: [
+                  PatternItem.dot,
+                  PatternItem.gap(5),
+                ],
+                points: state.getMoveHomePath(),
+                startCap: Cap.roundCap,
+              ),
             },
             polygons: {
               Polygon(
