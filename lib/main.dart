@@ -2,12 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:poly_repository/poly_repository.dart';
+import 'package:weather_repository/weather_repository.dart';
+
 import 'package:lawnmower_app/firebase_options.dart';
 import 'package:lawnmower_app/home/home.dart';
 import 'package:lawnmower_app/lawnmower_bloc_observer.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
-import 'package:poly_repository/poly_repository.dart';
-import 'package:weather_repository/weather_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

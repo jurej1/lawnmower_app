@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
@@ -164,24 +163,23 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       Map<String, dynamic> valHomeBase = (homebaseSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
       final LatLng homebase = LatLng(valHomeBase["lat"], valHomeBase["lng"]);
 
-      // final path = _polyRepository.generatePathInsidePolygon(points, stepSize);
-      await generatePathInsidePolygon(
-          points
-              .map(
-                (e) => {
-                  "lat": e.latitude,
-                  "lng": e.longitude,
-                },
-              )
-              .toList(),
-          stepSize);
-
+      final path = await generatePathInsidePolygon(
+        points
+            .map(
+              (e) => {
+                "lat": e.latitude,
+                "lng": e.longitude,
+              },
+            )
+            .toList(),
+        stepSize,
+      );
       emit(
         state.copyWith(
           markers: markers,
           homeBaseLocation: homebase,
           loadStatus: CutAreaStatus.success,
-          // path: path,
+          path: path,
         ),
       );
     } catch (e) {
@@ -208,7 +206,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     );
   }
 
-  Future<void> generatePathInsidePolygon(List<Map<String, double>> points, double stepSize) async {
+  Future<List<LatLng>?> generatePathInsidePolygon(List<Map<String, double>> points, double stepSize) async {
     // Define the URL of the server function
     const String url = 'https://us-central1-lawnmower-825c3.cloudfunctions.net/generatePathInsidePolygon';
 
@@ -231,7 +229,18 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         // Parse the response data
         final responseData = json.decode(response.body);
         // Use the responseData for your path
-        log("Response: $responseData");
+        print('Response data: $responseData');
+
+        List<LatLng> path = (responseData as List<dynamic>)
+            .map<LatLng>(
+              (e) => LatLng(
+                e["latitude"] ?? 0.0000,
+                e["longitude"] ?? 0.0000,
+              ),
+            )
+            .toList();
+        print('Response data PATH: $path');
+        return path;
       } else {
         // Handle the case where the server returns a non-200 status code
         print('Request failed with status: ${response.statusCode}.');
@@ -240,5 +249,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       // Handle any errors that occur during the request
       print('Error making the request: $e');
     }
+    return null;
   }
 }
