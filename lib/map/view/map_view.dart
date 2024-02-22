@@ -1,7 +1,6 @@
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:lawnmower_app/map/widgets/widgets.dart';
@@ -96,15 +95,15 @@ class _BodyBuilderState extends State<_BodyBuilder> {
       ],
       child: BlocBuilder<CutAreaBloc, CutAreaState>(
         builder: (context, state) {
-          return Stack(
+          return const Stack(
             children: [
               GoogleMapDisplayer(),
-              const Positioned(
+              Positioned(
                 top: 60,
                 left: 20,
                 child: TopActionRow(),
               ),
-              const Positioned(
+              Positioned(
                 bottom: 30,
                 left: 20,
                 child: BottomActionRow(),
