@@ -1,17 +1,52 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../blocs/cut_area/cut_area_bloc.dart';
 
-class GoogleMapDisplayer extends StatelessWidget {
-  GoogleMapDisplayer({super.key});
+class GoogleMapDisplayer extends StatefulWidget {
+  const GoogleMapDisplayer({super.key});
 
+  @override
+  State<GoogleMapDisplayer> createState() => _GoogleMapDisplayerState();
+}
+
+class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
   final Completer<GoogleMapController> _controller = Completer();
+
+  BitmapDescriptor homeBaseIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor lawnmowerIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor pathIcon = BitmapDescriptor.defaultMarker;
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
+  }
+
+  void setCustomMarkerIcon() async {
+    await Future.wait([
+      getBytesFromAsset("assets/home_base.png", 50).then((value) {
+        homeBaseIcon = BitmapDescriptor.fromBytes(value);
+      }),
+      getBytesFromAsset("assets/path_point.png", 50).then((value) {
+        pathIcon = BitmapDescriptor.fromBytes(value);
+      }),
+    ]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setCustomMarkerIcon();
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
   @override
@@ -37,8 +72,11 @@ class GoogleMapDisplayer extends StatelessWidget {
                   return Marker(
                     visible: !state.showPoly,
                     markerId: MarkerId(e.id.toString()),
+                    icon: pathIcon,
                     position: e.position,
+                    anchor: const Offset(0.5, 0.5),
                     draggable: true,
+                    flat: true,
                     onDragEnd: (val) {
                       BlocProvider.of<CutAreaBloc>(context).add(
                         CutAreaOnDragEnd(
@@ -55,7 +93,7 @@ class GoogleMapDisplayer extends StatelessWidget {
                 position: state.homeBaseLocation!,
                 visible: state.homeBaseLocation != null,
                 draggable: false,
-                icon: BitmapDescriptor.defaultMarkerWithHue(80),
+                icon: homeBaseIcon,
               ),
             },
             polylines: {

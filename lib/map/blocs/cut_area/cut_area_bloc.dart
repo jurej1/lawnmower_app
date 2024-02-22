@@ -39,7 +39,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   }
 
   final FirebaseRepository _firebaseRepository;
-  final double stepSize = 3;
+  final double stepSize = 2;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);
@@ -145,6 +145,17 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
         length: state.calculatePathLength(),
       );
+
+      // final path = await generatePathInsidePolygon(
+      //     points
+      //         .map(
+      //           (e) => {
+      //             "lat": e.latitude,
+      //             "lng": e.longitude,
+      //           },
+      //         )
+      //         .toList(),
+      //     0.3);
 
       await Future.wait([
         _firebaseRepository.setPathData(pathData),
