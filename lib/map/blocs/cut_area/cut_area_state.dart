@@ -96,12 +96,12 @@ class CutAreaState extends Equatable {
   }
 
   List<LatLng> getMoveToStartPath() {
-    if (homeBaseLocation == null && path == null) return [];
+    if (homeBaseLocation == null && path == null || path!.isEmpty) return [];
     return [homeBaseLocation!, path!.first];
   }
 
   List<LatLng> getMoveHomePath() {
-    if (path == null && homeBaseLocation == null) return [];
+    if (path == null && homeBaseLocation == null || path!.isEmpty) return [];
     return [path!.last, homeBaseLocation!];
   }
 
