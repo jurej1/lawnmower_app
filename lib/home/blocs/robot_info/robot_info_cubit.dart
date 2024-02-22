@@ -33,7 +33,7 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
       final currentState = state as RobotInfoSucess;
 
       final info = currentState.robotInfo.copyWith(
-        startTime: DateTime.now(),
+        startTime: val ? DateTime.now() : null,
         status: val ? RobotStatus.mowing : RobotStatus.sleeping,
       );
 
