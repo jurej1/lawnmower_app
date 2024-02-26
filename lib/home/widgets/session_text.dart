@@ -18,10 +18,10 @@ class SessionText extends StatelessWidget {
             return Container();
           } else if (state.robotInfo.status.isMowing) {
             if (state.robotInfo.estimatedEndTime == null) return Container();
-            return Text("Mowing session ends at: ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
+            return Text("Mowing session ends at ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
           } else if (state.robotInfo.status.isSleeping) {
             if (state.robotInfo.estimatedEndTime == null) return Container();
-            return Text("If Start Now mowing would end at: ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
+            return Text("If Start Now mowing would end at ${DateFormat("HH:mm").format(state.robotInfo.estimatedEndTime!)}");
           }
         }
         return Container();
