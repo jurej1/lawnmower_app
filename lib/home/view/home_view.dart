@@ -76,13 +76,7 @@ class HomeView extends StatelessWidget {
                 const SizedBox(height: 15),
                 const _ActionRow(),
                 const SizedBox(height: 20),
-                Container(
-                  height: 210,
-                  width: size.width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(image: AssetImage('assets/rasen_roboter_catia.jpg')),
-                  ),
-                ),
+                const ImageBuilder(),
                 const SizedBox(height: 20),
                 const SessionText(),
                 const SizedBox(height: 30),
@@ -111,6 +105,61 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ImageBuilder extends StatelessWidget {
+  const ImageBuilder({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RobotInfoCubit, RobotInfoState>(
+      builder: (context, state) {
+        if (state is RobotInfoSucess) {
+          return Column(
+            children: [
+              CustomPaint(
+                size: const Size(260, 260),
+                foregroundPainter: state.robotInfo.status.isMowing
+                    ? ProgressPainter(
+                        index: state.robotInfo.atPoint,
+                        fullLength: state.robotInfo.pathLength,
+                        backgroundColor: Colors.green,
+                      )
+                    : state.robotInfo.status.isCharging
+                        ? ProgressPainter(
+                            index: state.robotInfo.batteryState,
+                            fullLength: 100,
+                            backgroundColor: Colors.blue,
+                          )
+                        : null,
+                child: Container(
+                  height: 260,
+                  width: 260,
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset("assets/rasen_roboter_catia.jpg"),
+                ),
+              ),
+              if (state.robotInfo.status.isMowing)
+                Text(
+                  "${(state.robotInfo.atPoint / state.robotInfo.pathLength * 100).round()} %",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 21,
+                  ),
+                ),
+            ],
+          );
+        }
+        return SizedBox(
+          height: 260,
+          width: 260,
+          child: Image.asset("assets/rasen_roboter_catia.jpg"),
+        );
+      },
     );
   }
 }

@@ -79,9 +79,9 @@ class _BodyBuilderState extends State<_BodyBuilder> {
               const snackbar = SnackBar(content: Text("Update Success"));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
               BlocProvider.of<RobotInfoCubit>(context).pathDataUpdated(
+                pathLength: state.path?.length ?? 0,
                 area: state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
                 duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
-                pathLength: state.path?.length ?? 0,
               );
             } else if (state.submitStatus == CutAreaStatus.fail) {
               const snackbar = SnackBar(content: Text("Update Failed"));

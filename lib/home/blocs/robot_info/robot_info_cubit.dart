@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -10,9 +11,33 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
   RobotInfoCubit({
     required FirebaseRepository firebaseRepository,
   })  : _firebaseRepository = firebaseRepository,
-        super(RobotInfoLoading());
+        super(RobotInfoLoading()) {
+    _startListening();
+  }
 
   final FirebaseRepository _firebaseRepository;
+  StreamSubscription<DataSnapshot>? _robotInfoSubscription;
+
+  void _startListening() {
+    _robotInfoSubscription = _firebaseRepository.robotInfoListener().listen(
+      (DataSnapshot snapshot) {
+        if (snapshot.value != null) {
+          try {
+            Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
+            RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
+            emit(RobotInfoSucess(robotInfo: robotInfo));
+          } catch (e) {
+            log(e.toString());
+            emit(RobotInfoFail());
+          }
+        }
+      },
+      onError: (error) {
+        log(error.toString());
+        emit(RobotInfoFail());
+      },
+    );
+  }
 
   Future<void> loadData() async {
     try {
@@ -42,8 +67,6 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
             );
 
         await _firebaseRepository.setRobotInfo(robotInfo);
-
-        emit(RobotInfoSucess(robotInfo: robotInfo));
       } catch (e) {
         log(e.toString());
         emit(RobotInfoFail());
@@ -64,5 +87,11 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
       emit(RobotInfoSucess(robotInfo: info));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _robotInfoSubscription?.cancel();
+    return super.close();
   }
 }
