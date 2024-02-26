@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:poly_repository/poly_repository.dart';
 
 import 'package:bloc/bloc.dart';
@@ -10,6 +11,8 @@ import 'package:http/http.dart' as http;
 
 part 'cut_area_event.dart';
 part 'cut_area_state.dart';
+
+// TODO FINISH THE CUTAREA GPS
 
 class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   CutAreaBloc({
@@ -25,6 +28,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
             showPoly: false,
             isMapLoaded: false,
             showPath: false,
+            areaOfGPSPolygon: 0.0,
           ),
         ) {
     on<CutAreaInit>(_mapInitToState);
@@ -40,6 +44,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
   final FirebaseRepository _firebaseRepository;
   final double stepSize = 2;
+  static const double EARTH_RADIUS = 6371000;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);
@@ -65,10 +70,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       stepSize,
     );
 
+    final areaCalculated = await calculateAreaOfGPSPolygonOnSphereInSquareMeters(path ?? [], EARTH_RADIUS);
+
     emit(
       state.copyWith(
         markers: newList,
         path: path,
+        areaOfGPSPolygon: areaCalculated,
       ),
     );
   }
@@ -88,8 +96,15 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
           .toList(),
       stepSize,
     );
+    final areaCalculated = await calculateAreaOfGPSPolygonOnSphereInSquareMeters(path ?? [], EARTH_RADIUS);
 
-    emit(state.copyWith(markers: newList, path: path));
+    emit(
+      state.copyWith(
+        markers: newList,
+        path: path,
+        areaOfGPSPolygon: areaCalculated,
+      ),
+    );
   }
 
   FutureOr<void> _mapPolyToState(CutAreaShowPoly event, Emitter<CutAreaState> emit) {
@@ -110,11 +125,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
           .toList(),
       stepSize,
     );
+    final areaCalculated = await calculateAreaOfGPSPolygonOnSphereInSquareMeters(path ?? [], EARTH_RADIUS);
 
     emit(
       state.copyWith(
         markers: newList,
         path: path,
+        areaOfGPSPolygon: areaCalculated,
       ),
     );
   }
@@ -140,8 +157,10 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         emit(state.copyWith(path: path));
       }
 
+      final areaCalculated = await calculateAreaOfGPSPolygonOnSphereInSquareMeters(state.path ?? [], EARTH_RADIUS);
+
       PathData pathData = PathData(
-        cutArea: state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
+        cutArea: areaCalculated,
         duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
         length: state.calculatePathLength(),
       );
@@ -162,7 +181,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         _firebaseRepository.setCutPath(state.path!),
         _firebaseRepository.setMowingDurationAndArea(
           Duration(seconds: state.calculateMowingTimeInSeconds()),
-          state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
+          state.areaOfGPSPolygon,
         ),
         _firebaseRepository.setCutArea(points),
       ]);
@@ -182,6 +201,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         state.copyWith(
           markers: [],
           path: [],
+          areaOfGPSPolygon: 0.0,
         ),
       );
     } catch (e) {
@@ -224,12 +244,16 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
             .toList(),
         stepSize,
       );
+
+      final areaCalculated = await calculateAreaOfGPSPolygonOnSphereInSquareMeters(path ?? [], EARTH_RADIUS);
+
       emit(
         state.copyWith(
           markers: markers,
           homeBaseLocation: homebase,
           loadStatus: CutAreaStatus.success,
           path: path,
+          areaOfGPSPolygon: areaCalculated,
         ),
       );
     } catch (e) {
@@ -300,5 +324,32 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       print('Error making the request: $e');
     }
     return null;
+  }
+
+  Future<double> calculateAreaOfGPSPolygonOnSphereInSquareMeters(List<LatLng> locations, double radius) async {
+    if (locations.isEmpty) return 0.0;
+    // Replace with the URL of your deployed Firebase Cloud Function
+    final url = Uri.parse('https://us-central1-lawnmower-825c3.cloudfunctions.net/calculateAreaOfGPSPolygon');
+
+    // Prepare the locations data
+    final locationData = locations.map((location) => {'latitude': location.latitude, 'longitude': location.longitude}).toList();
+
+    // Make the POST request
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'locations': locationData, 'radius': radius}),
+    );
+
+    // Check the response status
+    if (response.statusCode == 200) {
+      // Parse the response body
+      final responseData = json.decode(response.body);
+      log("data: ${responseData['area']}");
+      return responseData['area'];
+    } else {
+      // Handle the error; throw an exception or return a default value
+      throw Exception('Failed to calculate area: ${response.body}');
+    }
   }
 }

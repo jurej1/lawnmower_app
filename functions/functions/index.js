@@ -1,5 +1,7 @@
 const functions = require("firebase-functions");
 const geolib = require("geolib");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
 class LatLng {
   constructor(latitude, longitude) {
@@ -108,4 +110,84 @@ function isPointInPolygon(point, polygonPoints) {
       polygonPoints.map((p) =>
         ({latitude: p.latitude, longitude: p.longitude})),
   );
+}
+
+
+exports.calculateAreaOfGPSPolygon = functions.https.onRequest(
+    (request, response) => {
+    // Enable CORS using the `cors` express middleware.
+      const cors = require("cors")({origin: true});
+      cors(request, response, () => {
+        if (request.method !== "POST") {
+          return response.status(405).send("Method Not Allowed");
+        }
+
+        const locations = request.body.locations;
+        const radius = request.body.radius;
+
+        if (!locations || locations.length < 3 || !radius) {
+          return response.status(400).send("Invalid input");
+        }
+
+        const area = calculateAreaOfGPSPolygonOnSphereInSquareMeters(
+            locations,
+            radius,
+        );
+        response.status(200).send({area: area});
+      });
+    });
+
+function calculateAreaOfGPSPolygonOnSphereInSquareMeters(locations, radius) {
+  if (locations.length < 3) {
+    return 0;
+  }
+
+  const diameter = radius * 2;
+  const circumference = diameter * Math.PI;
+  const listY = [];
+  const listX = [];
+  const listArea = [];
+
+  // calculate segment x and y in degrees for each point
+  const latitudeRef = locations[0].latitude;
+  const longitudeRef = locations[0].longitude;
+  for (let i = 1; i < locations.length; i++) {
+    const latitude = locations[i].latitude;
+    const longitude = locations[i].longitude;
+    listY.push(calculateYSegment(latitudeRef, latitude, circumference));
+    listX.push(calculateXSegment(longitudeRef, longitude, latitude,
+        circumference));
+  }
+
+  // calculate areas for each triangle segment
+  for (let i = 1; i < listX.length; i++) {
+    const x1 = listX[i - 1];
+    const y1 = listY[i - 1];
+    const x2 = listX[i];
+    const y2 = listY[i];
+    listArea.push(calculateAreaInSquareMeters(x1, x2, y1, y2));
+  }
+
+  // sum areas of all triangle segments
+  let areasSum = 0;
+  listArea.forEach((area) => {
+    areasSum += area;
+  });
+
+  // get absolute value of area, it can't be negative
+  return Math.abs(areasSum);
+}
+
+function calculateAreaInSquareMeters(x1, x2, y1, y2) {
+  return (y1 * x2 - x1 * y2) / 2;
+}
+
+function calculateYSegment(latitudeRef, latitude, circumference) {
+  return (latitude - latitudeRef) * circumference / 360.0;
+}
+
+function calculateXSegment(longitudeRef, longitude, latitude, circumference) {
+  const latitudeInRadians = latitude * Math.PI / 180;
+  return (longitude - longitudeRef) * circumference *
+    Math.cos(latitudeInRadians) / 360.0;
 }

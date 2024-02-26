@@ -4,90 +4,90 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class PolyRepository {
   const PolyRepository();
 
-  List<LatLng> generatePathInsidePolygon(List<LatLng> polygonPoints, double stepM) {
-    double minX = polygonPoints.map((e) => e.latitude).reduce(min);
-    double maxX = polygonPoints.map((e) => e.latitude).reduce(max);
-    double minY = polygonPoints.map((e) => e.longitude).reduce(min);
-    double maxY = polygonPoints.map((e) => e.longitude).reduce(max);
+  // List<LatLng> generatePathInsidePolygon(List<LatLng> polygonPoints, double stepM) {
+  //   double minX = polygonPoints.map((e) => e.latitude).reduce(min);
+  //   double maxX = polygonPoints.map((e) => e.latitude).reduce(max);
+  //   double minY = polygonPoints.map((e) => e.longitude).reduce(min);
+  //   double maxY = polygonPoints.map((e) => e.longitude).reduce(max);
 
-    double stepLat = metersToLatitude(stepM);
-    double stepLng = metersToLongitude(stepM, (minX + maxX) / 2);
+  //   double stepLat = metersToLatitude(stepM);
+  //   double stepLng = metersToLongitude(stepM, (minX + maxX) / 2);
 
-    List<LatLng> path = [];
-    bool moveRight = true;
+  //   List<LatLng> path = [];
+  //   bool moveRight = true;
 
-    for (double currentX = minX; currentX <= maxX; currentX += stepLat) {
-      if (moveRight) {
-        for (double currentY = minY; currentY <= maxY; currentY += stepLng) {
-          LatLng point = LatLng(currentX, currentY);
-          if (isPointInPolygon(point, polygonPoints)) {
-            path.add(point);
-          }
-        }
-      } else {
-        for (double currentY = maxY; currentY >= minY; currentY -= stepLng) {
-          LatLng point = LatLng(currentX, currentY);
-          if (isPointInPolygon(point, polygonPoints)) {
-            path.add(point);
-          }
-        }
-      }
-      moveRight = !moveRight;
-    }
+  //   for (double currentX = minX; currentX <= maxX; currentX += stepLat) {
+  //     if (moveRight) {
+  //       for (double currentY = minY; currentY <= maxY; currentY += stepLng) {
+  //         LatLng point = LatLng(currentX, currentY);
+  //         if (isPointInPolygon(point, polygonPoints)) {
+  //           path.add(point);
+  //         }
+  //       }
+  //     } else {
+  //       for (double currentY = maxY; currentY >= minY; currentY -= stepLng) {
+  //         LatLng point = LatLng(currentX, currentY);
+  //         if (isPointInPolygon(point, polygonPoints)) {
+  //           path.add(point);
+  //         }
+  //       }
+  //     }
+  //     moveRight = !moveRight;
+  //   }
 
-    path = connectPoints(path);
+  //   path = connectPoints(path);
 
-    return path;
-  }
+  //   return path;
+  // }
 
-  List<LatLng> connectPoints(List<LatLng> points) {
-    List<LatLng> connectedPath = [];
+  // List<LatLng> connectPoints(List<LatLng> points) {
+  //   List<LatLng> connectedPath = [];
 
-    if (points.isEmpty) {
-      return connectedPath;
-    }
+  //   if (points.isEmpty) {
+  //     return connectedPath;
+  //   }
 
-    LatLng previousPoint = points.first;
-    connectedPath.add(previousPoint);
+  //   LatLng previousPoint = points.first;
+  //   connectedPath.add(previousPoint);
 
-    for (int i = 1; i < points.length; i++) {
-      LatLng currentPoint = points[i];
-      connectedPath.add(currentPoint);
-      previousPoint = currentPoint;
-    }
+  //   for (int i = 1; i < points.length; i++) {
+  //     LatLng currentPoint = points[i];
+  //     connectedPath.add(currentPoint);
+  //     previousPoint = currentPoint;
+  //   }
 
-    return connectedPath;
-  }
+  //   return connectedPath;
+  // }
 
-  double metersToLatitude(double meters) {
-    return meters / 111320;
-  }
+  // double metersToLatitude(double meters) {
+  //   return meters / 111320;
+  // }
 
-  double metersToLongitude(double meters, double latitude) {
-    double latitudeRadians = latitude * pi / 180;
-    return meters / (111320 * cos(latitudeRadians));
-  }
+  // double metersToLongitude(double meters, double latitude) {
+  //   double latitudeRadians = latitude * pi / 180;
+  //   return meters / (111320 * cos(latitudeRadians));
+  // }
 
-  bool isPointInPolygon(LatLng point, List<LatLng> polygonPoints) {
-    int i, j = polygonPoints.length - 1;
-    bool oddNodes = false;
+  // bool isPointInPolygon(LatLng point, List<LatLng> polygonPoints) {
+  //   int i, j = polygonPoints.length - 1;
+  //   bool oddNodes = false;
 
-    for (i = 0; i < polygonPoints.length; i++) {
-      if (polygonPoints[i].longitude < point.longitude && polygonPoints[j].longitude >= point.longitude ||
-          polygonPoints[j].longitude < point.longitude && polygonPoints[i].longitude >= point.longitude) {
-        if (polygonPoints[i].latitude +
-                (point.longitude - polygonPoints[i].longitude) /
-                    (polygonPoints[j].longitude - polygonPoints[i].longitude) *
-                    (polygonPoints[j].latitude - polygonPoints[i].latitude) <
-            point.latitude) {
-          oddNodes = !oddNodes;
-        }
-      }
-      j = i;
-    }
+  //   for (i = 0; i < polygonPoints.length; i++) {
+  //     if (polygonPoints[i].longitude < point.longitude && polygonPoints[j].longitude >= point.longitude ||
+  //         polygonPoints[j].longitude < point.longitude && polygonPoints[i].longitude >= point.longitude) {
+  //       if (polygonPoints[i].latitude +
+  //               (point.longitude - polygonPoints[i].longitude) /
+  //                   (polygonPoints[j].longitude - polygonPoints[i].longitude) *
+  //                   (polygonPoints[j].latitude - polygonPoints[i].latitude) <
+  //           point.latitude) {
+  //         oddNodes = !oddNodes;
+  //       }
+  //     }
+  //     j = i;
+  //   }
 
-    return oddNodes;
-  }
+  //   return oddNodes;
+  // }
 
   double calculatePathLength(List<LatLng> path) {
     double totalLength = 0.0;

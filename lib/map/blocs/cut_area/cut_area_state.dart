@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-
 part of 'cut_area_bloc.dart';
 
 class MarkerShort extends Equatable {
@@ -43,6 +42,7 @@ class CutAreaState extends Equatable {
     required this.submitStatus,
     required this.loadStatus,
     required this.isMapLoaded,
+    required this.areaOfGPSPolygon,
   });
 
   final List<MarkerShort> markers;
@@ -54,6 +54,7 @@ class CutAreaState extends Equatable {
   final CutAreaStatus submitStatus;
   final CutAreaStatus loadStatus;
   final bool isMapLoaded;
+  final double areaOfGPSPolygon;
 
   CutAreaState copyWith({
     List<MarkerShort>? markers,
@@ -65,6 +66,7 @@ class CutAreaState extends Equatable {
     CutAreaStatus? submitStatus,
     CutAreaStatus? loadStatus,
     bool? isMapLoaded,
+    double? areaOfGPSPolygon,
   }) {
     return CutAreaState(
       markers: markers ?? this.markers,
@@ -76,16 +78,13 @@ class CutAreaState extends Equatable {
       submitStatus: submitStatus ?? this.submitStatus,
       loadStatus: loadStatus ?? this.loadStatus,
       isMapLoaded: isMapLoaded ?? this.isMapLoaded,
+      areaOfGPSPolygon: areaOfGPSPolygon ?? this.areaOfGPSPolygon,
     );
   }
 
   bool get isEnoughMarkers => markers.length > 2;
 
   final PolyRepository _polyRepository = const PolyRepository();
-
-  double calculateAreaOfGPSPolygonOnEarthInSquareMeters() {
-    return _polyRepository.calculateAreaOfGPSPolygonOnEarthInSquareMeters(markers.map((e) => e.position).toList());
-  }
 
   int calculateMowingTimeInSeconds() {
     return _polyRepository.calculateMowingTimeInSeconds(pathLength: calculatePathLength());
@@ -117,6 +116,7 @@ class CutAreaState extends Equatable {
       submitStatus,
       loadStatus,
       isMapLoaded,
+      areaOfGPSPolygon,
     ];
   }
 }
