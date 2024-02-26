@@ -120,6 +120,7 @@ class ImageBuilder extends StatelessWidget {
       builder: (context, state) {
         if (state is RobotInfoSucess) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomPaint(
                 size: const Size(260, 260),
