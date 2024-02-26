@@ -94,7 +94,12 @@ class HomeView extends StatelessWidget {
                     DhtDisplayer.provider(),
                     ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).push(MapView.route(context));
+                        Navigator.of(context).push(
+                          MapView.route(
+                            context,
+                            robotInfoCubit: BlocProvider.of<RobotInfoCubit>(context),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.location_on),
                       label: const Text("Open Google Maps"),

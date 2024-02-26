@@ -2,16 +2,20 @@ import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/map/blocs/blocs.dart';
 import 'package:lawnmower_app/map/widgets/widgets.dart';
 
 class MapView extends StatelessWidget {
   const MapView({super.key});
 
-  static route(context) {
+  static route(context, {required RobotInfoCubit robotInfoCubit}) {
     return MaterialPageRoute(
       builder: (_) {
-        return const MapView();
+        return BlocProvider.value(
+          value: robotInfoCubit,
+          child: const MapView(),
+        );
       },
     );
   }
@@ -74,6 +78,11 @@ class _BodyBuilderState extends State<_BodyBuilder> {
             if (state.submitStatus == CutAreaStatus.success) {
               const snackbar = SnackBar(content: Text("Update Success"));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              BlocProvider.of<RobotInfoCubit>(context).pathDataUpdated(
+                area: state.calculateAreaOfGPSPolygonOnEarthInSquareMeters(),
+                duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
+                pathLength: state.path?.length ?? 0,
+              );
             } else if (state.submitStatus == CutAreaStatus.fail) {
               const snackbar = SnackBar(content: Text("Update Failed"));
               ScaffoldMessenger.of(context).showSnackBar(snackbar);

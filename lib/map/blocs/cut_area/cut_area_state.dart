@@ -42,7 +42,6 @@ class CutAreaState extends Equatable {
     required this.submitStatus,
     required this.loadStatus,
     required this.isMapLoaded,
-    required this.areaOfGPSPolygon,
   });
 
   final List<MarkerShort> markers;
@@ -54,7 +53,6 @@ class CutAreaState extends Equatable {
   final CutAreaStatus submitStatus;
   final CutAreaStatus loadStatus;
   final bool isMapLoaded;
-  final double areaOfGPSPolygon;
 
   CutAreaState copyWith({
     List<MarkerShort>? markers,
@@ -66,7 +64,6 @@ class CutAreaState extends Equatable {
     CutAreaStatus? submitStatus,
     CutAreaStatus? loadStatus,
     bool? isMapLoaded,
-    double? areaOfGPSPolygon,
   }) {
     return CutAreaState(
       markers: markers ?? this.markers,
@@ -78,7 +75,6 @@ class CutAreaState extends Equatable {
       submitStatus: submitStatus ?? this.submitStatus,
       loadStatus: loadStatus ?? this.loadStatus,
       isMapLoaded: isMapLoaded ?? this.isMapLoaded,
-      areaOfGPSPolygon: areaOfGPSPolygon ?? this.areaOfGPSPolygon,
     );
   }
 
@@ -120,7 +116,6 @@ class CutAreaState extends Equatable {
       submitStatus,
       loadStatus,
       isMapLoaded,
-      areaOfGPSPolygon,
     ];
   }
 }

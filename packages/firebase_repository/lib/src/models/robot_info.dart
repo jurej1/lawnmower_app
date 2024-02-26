@@ -21,6 +21,8 @@ class RobotInfo extends Equatable {
   final DateTime? startTime;
   final double area;
   final Duration estimatedDuration;
+  final int atPoint;
+  final int pathLength;
 
   const RobotInfo({
     required this.status,
@@ -28,6 +30,8 @@ class RobotInfo extends Equatable {
     required this.startTime,
     required this.area,
     required this.estimatedDuration,
+    required this.atPoint,
+    required this.pathLength,
   });
 
   @override
@@ -38,6 +42,8 @@ class RobotInfo extends Equatable {
       startTime,
       area,
       estimatedDuration,
+      atPoint,
+      pathLength,
     ];
   }
 
@@ -47,7 +53,8 @@ class RobotInfo extends Equatable {
     DateTime? startTime,
     double? area,
     Duration? estimatedDuration,
-    bool? isON,
+    int? atPoint,
+    int? pathLength,
   }) {
     return RobotInfo(
       status: status ?? this.status,
@@ -55,6 +62,8 @@ class RobotInfo extends Equatable {
       startTime: startTime ?? this.startTime,
       area: area ?? this.area,
       estimatedDuration: estimatedDuration ?? this.estimatedDuration,
+      atPoint: atPoint ?? this.atPoint,
+      pathLength: pathLength ?? this.pathLength,
     );
   }
 
@@ -65,17 +74,20 @@ class RobotInfo extends Equatable {
       'startTime': startTime?.millisecondsSinceEpoch,
       'area': area,
       'estimatedDuration': estimatedDuration.inSeconds,
-      'isON': status.isMowing,
+      'atPoint': atPoint,
+      'pathLength': pathLength,
     };
   }
 
   factory RobotInfo.fromMap(Map<String, dynamic> map) {
     return RobotInfo(
-      status: RobotStatus.values.firstWhere((element) => element.name == map['status']),
+      status: RobotStatus.values.firstWhere((element) => element.name == map["status"]),
       batteryState: map['batteryState'] as int,
       startTime: map['startTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['startTime'] as int) : null,
       area: map['area'] as double,
-      estimatedDuration: Duration(seconds: map['estimatedDuration']),
+      estimatedDuration: Duration(seconds: map["estimatedDuration"]),
+      atPoint: map['atPoint'] ?? 0,
+      pathLength: map['pathLength'] ?? 0,
     );
   }
 

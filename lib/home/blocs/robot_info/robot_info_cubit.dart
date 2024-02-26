@@ -20,11 +20,34 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
       Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
-      RobotInfo workData = RobotInfo.fromMap(snapMap);
-      emit(RobotInfoSucess(robotInfo: workData));
+      RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
+      emit(RobotInfoSucess(robotInfo: robotInfo));
     } catch (e) {
       log(e.toString());
       emit(RobotInfoFail());
+    }
+  }
+
+  Future<void> pathDataUpdated({
+    required int pathLength,
+    required double area,
+    required Duration duration,
+  }) async {
+    if (state is RobotInfoSucess) {
+      try {
+        final robotInfo = (state as RobotInfoSucess).robotInfo.copyWith(
+              pathLength: pathLength,
+              area: area,
+              estimatedDuration: duration,
+            );
+
+        await _firebaseRepository.setRobotInfo(robotInfo);
+
+        emit(RobotInfoSucess(robotInfo: robotInfo));
+      } catch (e) {
+        log(e.toString());
+        emit(RobotInfoFail());
+      }
     }
   }
 
