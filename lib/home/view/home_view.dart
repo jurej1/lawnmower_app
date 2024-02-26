@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:weather_repository/weather_repository.dart';
 
 import '../../map/view/view.dart';
 
+// MOVE HOME
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -176,13 +179,13 @@ class _ActionRow extends StatelessWidget {
       children: [
         const Icon(Icons.cut),
         const Text("6"),
-        const SizedBox(width: 10),
+        const SizedBox(width: 15),
         _verticalBox(),
-        const SizedBox(width: 10),
+        const SizedBox(width: 15),
         const RobotLocationIcon(),
-        const SizedBox(width: 10),
+        const SizedBox(width: 15),
         _verticalBox(),
-        const SizedBox(width: 10),
+        const SizedBox(width: 15),
         const BatteryDisplayer(),
       ],
     );
@@ -208,13 +211,38 @@ class RobotLocationIcon extends StatelessWidget {
       builder: (context, state) {
         if (state is RobotLocationSuccess) {
           bool isHome = state.isOnBase;
-          return Row(
-            children: [
-              Icon(isHome ? Icons.home : Icons.location_on),
-              const SizedBox(width: 5),
-              Text(isHome ? "In base" : "Front yard"),
-            ],
-          );
+
+          if (isHome) {
+            return const Row(
+              children: [
+                Icon(Icons.home),
+                SizedBox(width: 5),
+                Text("In base"),
+              ],
+            );
+          } else {
+            return TextButton(
+              onPressed: () {
+                BlocProvider.of<RobotInfoCubit>(context).navigateHome();
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 5),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.green,
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    "Front yard",
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+            );
+          }
         }
         return Container();
       },

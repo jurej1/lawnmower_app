@@ -13,39 +13,13 @@ class StatusTextDisplayer extends StatelessWidget {
         if (state is RobotInfoLoading) return const CircularProgressIndicator();
 
         if (state is RobotInfoSucess) {
-          return Column(
-            children: [
-              Text(
-                mapStatusToText(state.robotInfo.status),
-                style: TextStyle(
-                  color: mapStatusToColor(state.robotInfo.status),
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 5),
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(12),
-              //   child: Container(
-              //     height: 5,
-              //     width: 180,
-              //     decoration: BoxDecoration(
-              //       color: Colors.grey.shade800,
-              //     ),
-              //     child: const FractionallySizedBox(
-              //       alignment: Alignment.centerLeft,
-              //       heightFactor: 1,
-              //       widthFactor: 0.4,
-              //       child: ColoredBox(color: Colors.green),
-              //     ),
-              //   ),
-              // ),
-
-              // TODO: fix this thing
-              // if charging -> display charging animation
-              // if sleeping -> animate bed or someting.
-              // if mowing -> animate how much it still has.
-            ],
+          return Text(
+            mapStatusToText(state.robotInfo.status),
+            style: TextStyle(
+              color: mapStatusToColor(state.robotInfo.status),
+              fontSize: 25,
+              fontWeight: FontWeight.w600,
+            ),
           );
         }
 
@@ -59,8 +33,12 @@ class StatusTextDisplayer extends StatelessWidget {
       return "Charging";
     } else if (status.isMowing) {
       return "Mowing";
-    } else {
+    } else if (status.isSleeping) {
       return "Sleeping";
+    } else if (status.isNavigating) {
+      return "Navigating...";
+    } else {
+      return "Navigating home";
     }
   }
 
@@ -69,8 +47,10 @@ class StatusTextDisplayer extends StatelessWidget {
       return Colors.blue;
     } else if (status.isMowing) {
       return Colors.green;
-    } else {
+    } else if (status.isCharging) {
       return Colors.purple.shade100;
+    } else {
+      return Colors.green;
     }
   }
 }

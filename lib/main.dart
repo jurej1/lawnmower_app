@@ -31,6 +31,7 @@ class App extends StatefulWidget {
   final WeatherRepository _weatherRepository;
   final FirebaseRepository _firebaseRepository;
   final PolyRepository _polyRepository;
+
   const App({
     super.key,
     required WeatherRepository weatherRepository,

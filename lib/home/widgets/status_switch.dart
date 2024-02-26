@@ -24,6 +24,15 @@ class StatusSwitch extends StatelessWidget {
                 child: _switch(info: state.robotInfo, context: context),
               ),
             );
+          } else if (state.robotInfo.status.isNavigatingHome) {
+            return Blur(
+              blur: 7,
+              blurColor: Colors.purple.shade100,
+              borderRadius: BorderRadius.circular(6),
+              child: IgnorePointer(
+                child: _switch(info: state.robotInfo, context: context),
+              ),
+            );
           } else {
             return _switch(
               info: state.robotInfo,

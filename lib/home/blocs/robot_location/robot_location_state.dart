@@ -15,7 +15,8 @@ class RobotLocationSuccess extends RobotLocationState {
 
   const RobotLocationSuccess({required this.robotLocation, required this.homeBase});
 
-  bool get isOnBase => robotLocation.latitude == homeBase.latitude && robotLocation.longitude == homeBase.longitude;
+  // bool get isOnBase => robotLocation.latitude == homeBase.latitude && robotLocation.longitude == homeBase.longitude;
+  bool get isOnBase => false;
 }
 
 class RobotLocationFail extends RobotLocationState {}

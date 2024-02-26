@@ -7,12 +7,16 @@ enum RobotStatus {
   mowing,
   sleeping,
   charging,
+  navigating,
+  navigatingHome,
 }
 
 extension WorkStatusX on RobotStatus {
   bool get isMowing => this == RobotStatus.mowing;
   bool get isSleeping => this == RobotStatus.sleeping;
   bool get isCharging => this == RobotStatus.charging;
+  bool get isNavigating => this == RobotStatus.navigating;
+  bool get isNavigatingHome => this == RobotStatus.navigatingHome;
 }
 
 class RobotInfo extends Equatable {

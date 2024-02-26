@@ -83,9 +83,22 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
         status: val ? RobotStatus.mowing : RobotStatus.sleeping,
       );
 
-      _firebaseRepository.setRobotInfo(info);
+      await _firebaseRepository.setRobotInfo(info);
 
       emit(RobotInfoSucess(robotInfo: info));
+    }
+  }
+
+  void navigateHome() async {
+    if (state is RobotInfoSucess) {
+      final currentState = state as RobotInfoSucess;
+      // TODO FINISH THIS STATE
+
+      final info = currentState.robotInfo.copyWith(
+        status: RobotStatus.navigatingHome,
+      );
+
+      await _firebaseRepository.setRobotInfo(info);
     }
   }
 
