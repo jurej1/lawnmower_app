@@ -86,6 +86,10 @@ class CutAreaState extends Equatable {
 
   final PolyRepository _polyRepository = const PolyRepository();
 
+  double calculateAreaOfGPSPolygonOnEarthInSquareMeters() {
+    return _polyRepository.calculateAreaOfGPSPolygonOnEarthInSquareMeters(markers.map((e) => e.position).toList());
+  }
+
   int calculateMowingTimeInSeconds() {
     return _polyRepository.calculateMowingTimeInSeconds(pathLength: calculatePathLength());
   }

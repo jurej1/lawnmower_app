@@ -26,7 +26,7 @@ class BottomActionRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "A: ${state.areaOfGPSPolygon.round()}m²",
+                      "A: ${state.calculateAreaOfGPSPolygonOnEarthInSquareMeters().round()} m²",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +14,7 @@ class WeatherDisplayer extends StatelessWidget {
       builder: (context, state) {
         if (state is WeatherSuccess) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,7 +30,13 @@ class WeatherDisplayer extends StatelessWidget {
                   Text(state.weatherLocation.conditionText),
                 ],
               ),
-              Text("Last updated: ${DateFormat("HH:mm").format(state.weatherLocation.lastUpdated)}")
+              Text(
+                "Last updated: ${DateFormat("HH:mm").format(state.weatherLocation.lastUpdated)}",
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 11,
+                ),
+              )
             ],
           );
         }
