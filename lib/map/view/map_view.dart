@@ -47,7 +47,7 @@ class MapView extends StatelessWidget {
 }
 
 class _BodyBuilder extends StatefulWidget {
-  _BodyBuilder({super.key});
+  const _BodyBuilder({super.key});
 
   @override
   State<_BodyBuilder> createState() => _BodyBuilderState();
@@ -58,7 +58,7 @@ class _BodyBuilder extends StatefulWidget {
         userLocation: userLocation,
         firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),
       )..add(CutAreaInit()),
-      child: _BodyBuilder(),
+      child: const _BodyBuilder(),
     );
   }
 }
@@ -93,24 +93,20 @@ class _BodyBuilderState extends State<_BodyBuilder> {
           },
         ),
       ],
-      child: BlocBuilder<CutAreaBloc, CutAreaState>(
-        builder: (context, state) {
-          return const Stack(
-            children: [
-              GoogleMapDisplayer(),
-              Positioned(
-                top: 60,
-                left: 20,
-                child: TopActionRow(),
-              ),
-              Positioned(
-                bottom: 30,
-                left: 20,
-                child: BottomActionRow(),
-              ),
-            ],
-          );
-        },
+      child: const Stack(
+        children: [
+          GoogleMapDisplayer(),
+          Positioned(
+            top: 60,
+            left: 20,
+            child: TopActionRow(),
+          ),
+          Positioned(
+            bottom: 30,
+            left: 20,
+            child: BottomActionRow(),
+          ),
+        ],
       ),
     );
   }
