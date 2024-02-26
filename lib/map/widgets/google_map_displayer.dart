@@ -23,6 +23,7 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
+    BlocProvider.of<CutAreaBloc>(context).add(CutAreaMapLoaded());
   }
 
   void setCustomMarkerIcon() async {
@@ -58,10 +59,7 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
             compassEnabled: true,
             mapType: MapType.satellite,
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            onMapCreated: (controller) {
-              _onMapCreated(controller);
-              BlocProvider.of<CutAreaBloc>(context).add(CutAreaMapLoaded());
-            },
+            onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               zoom: 18.0,
               target: state.homeBaseLocation ?? state.userLocation,

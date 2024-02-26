@@ -12,8 +12,6 @@ import 'package:http/http.dart' as http;
 part 'cut_area_event.dart';
 part 'cut_area_state.dart';
 
-// TODO FINISH THE CUTAREA GPS
-
 class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   CutAreaBloc({
     required LatLng userLocation,
