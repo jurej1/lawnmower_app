@@ -92,7 +92,6 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
   void navigateHome() async {
     if (state is RobotInfoSucess) {
       final currentState = state as RobotInfoSucess;
-      // TODO FINISH THIS STATE
 
       final info = currentState.robotInfo.copyWith(
         status: RobotStatus.navigatingHome,

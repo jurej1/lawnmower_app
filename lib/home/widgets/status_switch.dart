@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blur/blur.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +36,12 @@ class StatusSwitch extends StatelessWidget {
               ),
             );
           } else {
-            return _switch(
-              info: state.robotInfo,
-              context: context,
+            return Container(
+              key: ValueKey(state.robotInfo.status),
+              child: _switch(
+                info: state.robotInfo,
+                context: context,
+              ),
             );
           }
         }
@@ -59,6 +64,7 @@ class StatusSwitch extends StatelessWidget {
       iconOn: Icons.check,
       iconOff: Icons.beach_access,
       // textSize: 16.0,
+
       textOnColor: Colors.white,
       onChanged: (bool state) {
         BlocProvider.of<RobotInfoCubit>(context).statusSwitchUpdated(state);
