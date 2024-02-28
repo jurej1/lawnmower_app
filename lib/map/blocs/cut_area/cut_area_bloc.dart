@@ -36,6 +36,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
     on<CutAreaDeleteMarkers>(_mapDeleteMarkersToState);
     on<CutAreaMapLoaded>(_mapMapLoadedToState);
     on<CutAreaPathSwitchClicked>(_mapPathSwitchToState);
+    on<CutAreaHomeBaseUpdated>(_mapHomeBaseUpdatedToState);
   }
 
   final FirebaseRepository _firebaseRepository;
@@ -152,17 +153,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         duration: Duration(seconds: state.calculateMowingTimeInSeconds()),
         length: state.calculatePathLength(),
       );
-
-      // final path = await generatePathInsidePolygon(
-      //     points
-      //         .map(
-      //           (e) => {
-      //             "lat": e.latitude,
-      //             "lng": e.longitude,
-      //           },
-      //         )
-      //         .toList(),
-      //     0.3);
 
       await Future.wait([
         _firebaseRepository.setPathData(pathData),
@@ -304,5 +294,13 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
       print('Error making the request: $e');
     }
     return null;
+  }
+
+  FutureOr<void> _mapHomeBaseUpdatedToState(CutAreaHomeBaseUpdated event, Emitter<CutAreaState> emit) async {
+    final newState = state.copyWith(homeBaseLocation: event.finalPosition);
+
+    await _firebaseRepository.setHomebaseGPS(event.finalPosition);
+
+    emit(newState);
   }
 }

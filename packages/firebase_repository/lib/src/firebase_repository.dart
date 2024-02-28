@@ -44,6 +44,13 @@ class FirebaseRepository {
     return _database.ref("GPS_homebase").get();
   }
 
+  Future<void> setHomebaseGPS(LatLng latLng) async {
+    return _database.ref("GPS_homebase").update({
+      "lat": latLng.latitude,
+      "lng": latLng.longitude,
+    });
+  }
+
   Future<DataSnapshot> getRobotLocation() async {
     return _database.ref("GPS_current").get();
   }

@@ -90,7 +90,10 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
                 markerId: const MarkerId("home-base-position"),
                 position: state.homeBaseLocation!,
                 visible: state.homeBaseLocation != null,
-                draggable: false,
+                draggable: true,
+                onDragEnd: (val) {
+                  BlocProvider.of<CutAreaBloc>(context).add(CutAreaHomeBaseUpdated(finalPosition: val));
+                },
                 icon: homeBaseIcon,
               ),
             },

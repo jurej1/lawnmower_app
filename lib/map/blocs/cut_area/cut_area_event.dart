@@ -28,4 +28,10 @@ class CutAreaDeleteMarkers extends CutAreaEvent {}
 
 class CutAreaMapLoaded extends CutAreaEvent {}
 
+class CutAreaHomeBaseUpdated extends CutAreaEvent {
+  final LatLng finalPosition;
+
+  const CutAreaHomeBaseUpdated({required this.finalPosition});
+}
+
 class CutAreaPathSwitchClicked extends CutAreaEvent {}
