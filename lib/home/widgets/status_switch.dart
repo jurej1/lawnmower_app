@@ -76,16 +76,17 @@ class StatusSwitch extends StatelessWidget {
           onDoubleTap: () {},
           onSwipe: () {},
         ),
-        ElevatedButton.icon(
-          onPressed: () {
-            BlocProvider.of<RobotInfoCubit>(context).hybrdiSwitchPress();
-          },
-          icon: Icon(isHybrid ? Icons.check : Icons.remove),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isHybrid ? Colors.green.withOpacity(0.4) : null,
+        if (info.status.isSleeping)
+          ElevatedButton.icon(
+            onPressed: () {
+              BlocProvider.of<RobotInfoCubit>(context).hybrdiSwitchPress();
+            },
+            icon: Icon(isHybrid ? Icons.check : Icons.remove),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isHybrid ? Colors.green.withOpacity(0.4) : null,
+            ),
+            label: const Text("Hybrid"),
           ),
-          label: const Text("Hybrid"),
-        ),
       ],
     );
   }
