@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,12 +146,27 @@ class ImageBuilder extends StatelessWidget {
                 ),
               ),
               if (state.robotInfo.status.isMowing)
-                Text(
-                  "${(state.robotInfo.atPoint / state.robotInfo.pathLength * 100).round()} %",
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontSize: 21,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${(state.robotInfo.atPoint / state.robotInfo.pathLength * 100).round()} %",
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontSize: 21,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    _verticalBox(),
+                    const SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // TODO
+                      },
+                      icon: const Icon(Icons.location_on),
+                      label: const Text("Track me"),
+                    ),
+                  ],
                 ),
             ],
           );
@@ -164,6 +177,14 @@ class ImageBuilder extends StatelessWidget {
           child: Image.asset("assets/rasen_roboter_catia.jpg"),
         );
       },
+    );
+  }
+
+  Widget _verticalBox() {
+    return Container(
+      width: 1,
+      height: 20,
+      color: Colors.grey,
     );
   }
 }

@@ -9,6 +9,7 @@ enum RobotStatus {
   charging,
   navigating,
   navigatingHome,
+  mowingHybrid,
 }
 
 extension WorkStatusX on RobotStatus {

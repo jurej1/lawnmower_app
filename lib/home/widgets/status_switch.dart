@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blur/blur.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';

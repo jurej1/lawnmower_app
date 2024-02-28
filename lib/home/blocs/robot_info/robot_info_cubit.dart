@@ -80,7 +80,8 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
       final info = currentState.robotInfo.copyWith(
         startTime: val ? DateTime.now() : null,
-        status: val ? RobotStatus.mowing : RobotStatus.sleeping,
+        // status: val ? RobotStatus.mowing : RobotStatus.sleeping,
+        status: val ? RobotStatus.mowingHybrid : RobotStatus.sleeping,
       );
 
       await _firebaseRepository.setRobotInfo(info);
