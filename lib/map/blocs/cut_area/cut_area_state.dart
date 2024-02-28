@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'cut_area_bloc.dart';
 
 class MarkerShort extends Equatable {
@@ -36,6 +35,7 @@ class CutAreaState extends Equatable {
     required this.markers,
     this.path,
     required this.userLocation,
+    this.mowerLocation,
     this.homeBaseLocation,
     required this.showPoly,
     required this.showPath,
@@ -47,6 +47,7 @@ class CutAreaState extends Equatable {
   final List<MarkerShort> markers;
   final List<LatLng>? path;
   final LatLng userLocation;
+  final LatLng? mowerLocation;
   final LatLng? homeBaseLocation;
   final bool showPoly;
   final bool showPath;
@@ -58,6 +59,7 @@ class CutAreaState extends Equatable {
     List<MarkerShort>? markers,
     List<LatLng>? path,
     LatLng? userLocation,
+    LatLng? mowerLocation,
     LatLng? homeBaseLocation,
     bool? showPoly,
     bool? showPath,
@@ -69,6 +71,7 @@ class CutAreaState extends Equatable {
       markers: markers ?? this.markers,
       path: path ?? this.path,
       userLocation: userLocation ?? this.userLocation,
+      mowerLocation: mowerLocation ?? this.mowerLocation,
       homeBaseLocation: homeBaseLocation ?? this.homeBaseLocation,
       showPoly: showPoly ?? this.showPoly,
       showPath: showPath ?? this.showPath,
@@ -110,6 +113,7 @@ class CutAreaState extends Equatable {
       markers,
       path,
       userLocation,
+      mowerLocation,
       homeBaseLocation,
       showPoly,
       showPath,

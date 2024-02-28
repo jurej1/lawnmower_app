@@ -34,6 +34,9 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
       getBytesFromAsset("assets/path_point.png", 50).then((value) {
         pathIcon = BitmapDescriptor.fromBytes(value);
       }),
+      getBytesFromAsset("assets/mower_point.png", 50).then((value) {
+        lawnmowerIcon = BitmapDescriptor.fromBytes(value);
+      }),
     ]);
   }
 
@@ -95,6 +98,13 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
                   BlocProvider.of<CutAreaBloc>(context).add(CutAreaHomeBaseUpdated(finalPosition: val));
                 },
                 icon: homeBaseIcon,
+              ),
+              Marker(
+                markerId: const MarkerId("lawnmower-position"),
+                position: state.mowerLocation!,
+                visible: state.mowerLocation != null,
+                draggable: false,
+                icon: lawnmowerIcon,
               ),
             },
             polylines: {

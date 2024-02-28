@@ -218,12 +218,18 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         stepSize,
       );
 
+      // lawnmower
+      final lawnmowerSnapshot = await _firebaseRepository.getRobotLocation();
+      Map<String, dynamic> valLawnMower = (lawnmowerSnapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
+      final LatLng lawnMower = LatLng(valLawnMower["lat"], valLawnMower["lng"]);
+
       emit(
         state.copyWith(
           markers: markers,
           homeBaseLocation: homebase,
           loadStatus: CutAreaStatus.success,
           path: path,
+          mowerLocation: lawnMower,
         ),
       );
     } catch (e) {
