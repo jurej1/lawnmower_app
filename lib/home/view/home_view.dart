@@ -146,27 +146,12 @@ class ImageBuilder extends StatelessWidget {
                 ),
               ),
               if (state.robotInfo.status.isMowing)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "${(state.robotInfo.atPoint / state.robotInfo.pathLength * 100).round()} %",
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 21,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    _verticalBox(),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO
-                      },
-                      icon: const Icon(Icons.location_on),
-                      label: const Text("Track me"),
-                    ),
-                  ],
+                Text(
+                  "${(state.robotInfo.atPoint / state.robotInfo.pathLength * 100).round()} %",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 21,
+                  ),
                 ),
             ],
           );
@@ -177,14 +162,6 @@ class ImageBuilder extends StatelessWidget {
           child: Image.asset("assets/rasen_roboter_catia.jpg"),
         );
       },
-    );
-  }
-
-  Widget _verticalBox() {
-    return Container(
-      width: 1,
-      height: 20,
-      color: Colors.grey,
     );
   }
 }
