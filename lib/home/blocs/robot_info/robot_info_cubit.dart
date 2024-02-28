@@ -25,7 +25,12 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
           try {
             Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
             RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
-            emit(RobotInfoSucess(robotInfo: robotInfo));
+            emit(
+              RobotInfoSucess(
+                robotInfo: robotInfo,
+                isHybrdidEnabled: robotInfo.status.isMowingHybrid,
+              ),
+            );
           } catch (e) {
             log(e.toString());
             emit(RobotInfoFail());
@@ -46,7 +51,12 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
       Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
       RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
-      emit(RobotInfoSucess(robotInfo: robotInfo));
+      emit(
+        RobotInfoSucess(
+          robotInfo: robotInfo,
+          isHybrdidEnabled: robotInfo.status.isMowingHybrid,
+        ),
+      );
     } catch (e) {
       log(e.toString());
       emit(RobotInfoFail());
@@ -80,13 +90,19 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
       final info = currentState.robotInfo.copyWith(
         startTime: val ? DateTime.now() : null,
-        // status: val ? RobotStatus.mowing : RobotStatus.sleeping,
-        status: val ? RobotStatus.mowingHybrid : RobotStatus.sleeping,
+        status: val ? (currentState.isHybrdidEnabled ? RobotStatus.mowingHybrid : RobotStatus.mowing) : RobotStatus.sleeping,
       );
 
       await _firebaseRepository.setRobotInfo(info);
 
-      emit(RobotInfoSucess(robotInfo: info));
+      emit(RobotInfoSucess(robotInfo: info, isHybrdidEnabled: currentState.isHybrdidEnabled));
+    }
+  }
+
+  void hybrdiSwitchPress() async {
+    if (state is RobotInfoSucess) {
+      final currentState = state as RobotInfoSucess;
+      emit(RobotInfoSucess(robotInfo: currentState.robotInfo, isHybrdidEnabled: !currentState.isHybrdidEnabled));
     }
   }
 

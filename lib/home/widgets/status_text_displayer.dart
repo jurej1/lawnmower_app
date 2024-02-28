@@ -37,8 +37,12 @@ class StatusTextDisplayer extends StatelessWidget {
       return "Sleeping";
     } else if (status.isNavigating) {
       return "Navigating...";
-    } else {
+    } else if (status.isNavigatingHome) {
       return "Navigating home";
+    } else if (status.isMowingHybrid) {
+      return "Mowing Hybrid";
+    } else {
+      return "...";
     }
   }
 

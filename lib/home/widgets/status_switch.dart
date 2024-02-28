@@ -21,7 +21,11 @@ class StatusSwitch extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               overlay: const Text("Let me charg nigga..."),
               child: IgnorePointer(
-                child: _switch(info: state.robotInfo, context: context),
+                child: _switch(
+                  info: state.robotInfo,
+                  context: context,
+                  isHybrid: state.isHybrdidEnabled,
+                ),
               ),
             );
           } else if (state.robotInfo.status.isNavigatingHome) {
@@ -30,16 +34,13 @@ class StatusSwitch extends StatelessWidget {
               blurColor: Colors.purple.shade100,
               borderRadius: BorderRadius.circular(6),
               child: IgnorePointer(
-                child: _switch(info: state.robotInfo, context: context),
+                child: _switch(info: state.robotInfo, context: context, isHybrid: state.isHybrdidEnabled),
               ),
             );
           } else {
             return Container(
               key: ValueKey(state.robotInfo.status),
-              child: _switch(
-                info: state.robotInfo,
-                context: context,
-              ),
+              child: _switch(info: state.robotInfo, context: context, isHybrid: state.isHybrdidEnabled),
             );
           }
         }
@@ -51,25 +52,41 @@ class StatusSwitch extends StatelessWidget {
   Widget _switch({
     required RobotInfo info,
     required BuildContext context,
+    required bool isHybrid,
   }) {
-    return LiteRollingSwitch(
-      width: 200,
-      value: info.status.isMowing ? true : false,
-      textOn: 'eating grass',
-      textOff: 'on vacation...',
-      colorOn: Colors.green,
-      colorOff: Colors.redAccent.shade700,
-      iconOn: Icons.check,
-      iconOff: Icons.beach_access,
-      // textSize: 16.0,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        LiteRollingSwitch(
+          width: 200,
+          value: info.status.isMowing || info.status.isMowingHybrid ? true : false,
+          textOn: 'eating grass',
+          textOff: 'on vacation...',
+          colorOn: Colors.green,
+          colorOff: Colors.redAccent.shade700,
+          iconOn: Icons.check,
+          iconOff: Icons.beach_access,
+          // textSize: 16.0,
 
-      textOnColor: Colors.white,
-      onChanged: (bool state) {
-        BlocProvider.of<RobotInfoCubit>(context).statusSwitchUpdated(state);
-      },
-      onTap: () {},
-      onDoubleTap: () {},
-      onSwipe: () {},
+          textOnColor: Colors.white,
+          onChanged: (bool state) {
+            BlocProvider.of<RobotInfoCubit>(context).statusSwitchUpdated(state);
+          },
+          onTap: () {},
+          onDoubleTap: () {},
+          onSwipe: () {},
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            BlocProvider.of<RobotInfoCubit>(context).hybrdiSwitchPress();
+          },
+          icon: Icon(isHybrid ? Icons.check : Icons.remove),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isHybrid ? Colors.green.withOpacity(0.4) : null,
+          ),
+          label: const Text("Hybrid"),
+        ),
+      ],
     );
   }
 }

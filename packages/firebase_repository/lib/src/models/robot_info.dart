@@ -18,6 +18,7 @@ extension WorkStatusX on RobotStatus {
   bool get isCharging => this == RobotStatus.charging;
   bool get isNavigating => this == RobotStatus.navigating;
   bool get isNavigatingHome => this == RobotStatus.navigatingHome;
+  bool get isMowingHybrid => this == RobotStatus.mowingHybrid;
 }
 
 class RobotInfo extends Equatable {
