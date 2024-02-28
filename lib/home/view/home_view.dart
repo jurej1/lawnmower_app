@@ -9,7 +9,7 @@ import 'package:weather_repository/weather_repository.dart';
 import '../../map/view/view.dart';
 
 // MOVE HOME
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   static Widget provider() {
@@ -33,6 +33,33 @@ class HomeView extends StatelessWidget {
       ],
       child: const HomeView(),
     );
+  }
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        BlocProvider.of<WeatherCubit>(context).getWeatherInfo();
+        BlocProvider.of<RobotInfoCubit>(context).loadData();
+        BlocProvider.of<RobotLocationCubit>(context).loadData();
+        break;
+      case AppLifecycleState.inactive:
+        print("app is in inactive state");
+        break;
+      case AppLifecycleState.paused:
+        print("app is in paused state");
+        break;
+      case AppLifecycleState.detached:
+        print("app has been removed");
+        break;
+      case AppLifecycleState.hidden:
+      // TODO: Handle this case.
+    }
   }
 
   @override

@@ -88,9 +88,12 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
     if (state is RobotInfoSucess) {
       final currentState = state as RobotInfoSucess;
 
+      final newStatus = val ? (currentState.isHybrdidEnabled ? RobotStatus.mowingHybrid : RobotStatus.mowing) : RobotStatus.sleeping;
+
       final info = currentState.robotInfo.copyWith(
         startTime: val ? DateTime.now() : null,
-        status: val ? (currentState.isHybrdidEnabled ? RobotStatus.mowingHybrid : RobotStatus.mowing) : RobotStatus.sleeping,
+        status: newStatus,
+        atPoint: newStatus.isSleeping ? 0 : null,
       );
 
       await _firebaseRepository.setRobotInfo(info);
