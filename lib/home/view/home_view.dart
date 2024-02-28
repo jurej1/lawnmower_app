@@ -167,7 +167,7 @@ class ImageBuilder extends StatelessWidget {
 }
 
 class _ActionRow extends StatelessWidget {
-  const _ActionRow({super.key});
+  const _ActionRow();
 
   @override
   Widget build(BuildContext context) {
