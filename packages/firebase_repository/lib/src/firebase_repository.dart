@@ -75,6 +75,10 @@ class FirebaseRepository {
     return _database.ref("robot_info").get();
   }
 
+  Future<DataSnapshot> getSchedulesList() async {
+    return _database.ref("schedules").get();
+  }
+
   Stream<DataSnapshot> robotInfoListener() {
     return _database.ref("robot_info").onValue.map((event) => event.snapshot);
   }

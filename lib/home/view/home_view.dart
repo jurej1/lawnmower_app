@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
+import 'package:lawnmower_app/schedule/schedule.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 import '../../map/view/view.dart';
@@ -85,7 +86,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             width: size.width,
             child: Column(
               children: [
-                const SizedBox(height: 60),
+                const SizedBox(height: 40),
                 Row(
                   children: [
                     ElevatedButton(
@@ -128,6 +129,13 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                // TextButton(
+                //   onPressed: () {
+                //     Navigator.of(context).push(ScheduleView.route());
+                //   },
+                //   child: Text("Schedules"),
+                // ),
               ],
             ),
           ),
