@@ -56,6 +56,7 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
 
       RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
       final isHybrid = (currentState is RobotInfoSucess) ? (currentState).isHybrdidEnabled : robotInfo.status.isMowingHybrid;
+
       emit(
         RobotInfoSucess(
           robotInfo: robotInfo,
