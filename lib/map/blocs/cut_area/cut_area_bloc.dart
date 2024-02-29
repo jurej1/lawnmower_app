@@ -47,9 +47,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
 
     newList = newList.map((e) {
       if (e.id == event.id) {
-        return e.copyWith(
-          position: event.finalPosition,
-        );
+        return e.copyWith(position: event.finalPosition);
       }
       return e;
     }).toList();
