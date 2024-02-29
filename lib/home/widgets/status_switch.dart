@@ -19,7 +19,12 @@ class StatusSwitch extends StatelessWidget {
               blur: 7,
               blurColor: Colors.purple.shade100,
               borderRadius: BorderRadius.circular(6),
-              overlay: const Text("Let me charg nigga..."),
+              overlay: const Text(
+                "Let me charge...",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
               child: IgnorePointer(
                 child: _switch(
                   info: state.robotInfo,

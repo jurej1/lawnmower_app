@@ -23,12 +23,15 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
       (DataSnapshot snapshot) {
         if (snapshot.value != null) {
           try {
+            final currentState = state;
+
             Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
             RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
+            final isHybrid = (currentState is RobotInfoSucess) ? (currentState).isHybrdidEnabled : robotInfo.status.isMowingHybrid;
             emit(
               RobotInfoSucess(
                 robotInfo: robotInfo,
-                isHybrdidEnabled: robotInfo.status.isMowingHybrid,
+                isHybrdidEnabled: isHybrid,
               ),
             );
           } catch (e) {
@@ -47,14 +50,16 @@ class RobotInfoCubit extends Cubit<RobotInfoState> {
   Future<void> loadData() async {
     try {
       DataSnapshot snapshot = await _firebaseRepository.getRobotInfo();
+      final currentState = state;
 
       Map<String, dynamic> snapMap = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
       RobotInfo robotInfo = RobotInfo.fromMap(snapMap);
+      final isHybrid = (currentState is RobotInfoSucess) ? (currentState).isHybrdidEnabled : robotInfo.status.isMowingHybrid;
       emit(
         RobotInfoSucess(
           robotInfo: robotInfo,
-          isHybrdidEnabled: robotInfo.status.isMowingHybrid,
+          isHybrdidEnabled: isHybrid,
         ),
       );
     } catch (e) {
