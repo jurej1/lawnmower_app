@@ -8,6 +8,6 @@ class DateInput extends FormzInput<DateTime, DateInputError> {
 
   @override
   DateInputError? validator(DateTime value) {
-    return value.isBefore(DateTime.now()) ? DateInputError.invalid : null;
+    return null;
   }
 }

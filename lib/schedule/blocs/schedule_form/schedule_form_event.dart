@@ -13,4 +13,10 @@ class ScheduleFormDateUpdated extends ScheduleFormEvent {
   const ScheduleFormDateUpdated({required this.date});
 }
 
+class ScheduleFormTimeUpdated extends ScheduleFormEvent {
+  final TimeOfDay timeOfDay;
+
+  const ScheduleFormTimeUpdated({required this.timeOfDay});
+}
+
 class ScheduleFormSubmit extends ScheduleFormEvent {}

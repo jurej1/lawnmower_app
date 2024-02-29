@@ -1,10 +1,7 @@
 part of 'schedule_list_bloc.dart';
 
-abstract class ScheduleListState extends Equatable {
+abstract class ScheduleListState {
   const ScheduleListState();
-
-  @override
-  List<Object> get props => [];
 }
 
 class ScheduleListLoading extends ScheduleListState {}

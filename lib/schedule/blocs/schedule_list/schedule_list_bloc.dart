@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -13,6 +14,7 @@ class ScheduleListBloc extends Bloc<ScheduleListEvent, ScheduleListState> {
       : _firebaseRepository = firebaseRepository,
         super(ScheduleListLoading()) {
     on<ScheduleListLoad>(_mapLoadToState);
+    on<ScheduleListItemAdded>(_mapAddedToState);
   }
 
   final FirebaseRepository _firebaseRepository;
@@ -20,11 +22,33 @@ class ScheduleListBloc extends Bloc<ScheduleListEvent, ScheduleListState> {
   FutureOr<void> _mapLoadToState(ScheduleListLoad event, Emitter<ScheduleListState> emit) async {
     try {
       DataSnapshot snapshot = await _firebaseRepository.getSchedulesList();
-      final data = (snapshot.value as List<dynamic>).map<Schedule>((e) => Schedule.fromMap(e)).toList();
+      final data = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
-      emit(ScheduleListSuccess(schedules: data));
+      final dataFiltered = data.values
+          .map<Schedule>(
+            (e) => Schedule(
+              id: e["id"],
+              time: DateTime.fromMillisecondsSinceEpoch(e["time"]),
+            ),
+          )
+          .toList();
+
+      emit(ScheduleListSuccess(schedules: dataFiltered));
     } catch (e) {
+      log(e.toString());
       emit(ScheduleListFail());
+    }
+  }
+
+  FutureOr<void> _mapAddedToState(ScheduleListItemAdded event, Emitter<ScheduleListState> emit) async {
+    if (state is ScheduleListSuccess) {
+      List<Schedule> list = List.from((state as ScheduleListSuccess).schedules);
+
+      list
+        ..add(event.schedule)
+        ..sort();
+
+      emit(ScheduleListSuccess(schedules: list));
     }
   }
 }

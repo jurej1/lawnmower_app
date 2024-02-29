@@ -8,3 +8,9 @@ abstract class ScheduleListEvent extends Equatable {
 }
 
 class ScheduleListLoad extends ScheduleListEvent {}
+
+class ScheduleListItemAdded extends ScheduleListEvent {
+  final Schedule schedule;
+
+  const ScheduleListItemAdded({required this.schedule});
+}
