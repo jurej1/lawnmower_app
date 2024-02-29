@@ -78,9 +78,6 @@ class BlueControlBloc extends Bloc<BlueControlEvent, BlueControlState> {
   FutureOr<void> _mapNotificationToState(BlueControlNotificationDetected event, Emitter<BlueControlState> emit) {
     final String msg = utf8.decode(event.values);
 
-    log("MSG1: ${event.values}");
-    log("MSG2: $msg");
-
     if (msg.isNotEmpty) {
       if (msg == "msg111") {
         emit(
