@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lawnmower_app/bluetooth/view/bluetooth_view.dart';
 import 'package:lawnmower_app/home/blocs/blocs.dart';
 import 'package:lawnmower_app/home/widgets/widgets.dart';
-import 'package:lawnmower_app/schedule/schedule.dart';
 import 'package:weather_repository/weather_repository.dart';
 
 import '../../map/view/view.dart';
