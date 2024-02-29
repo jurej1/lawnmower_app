@@ -1,10 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'schedule_form_bloc.dart';
 
-sealed class ScheduleFormState extends Equatable {
-  const ScheduleFormState();
-  
-  @override
-  List<Object> get props => [];
-}
+class ScheduleFormState extends Equatable {
+  const ScheduleFormState({
+    required this.dateInput,
+    required this.status,
+  });
 
-final class ScheduleFormInitial extends ScheduleFormState {}
+  final DateInput dateInput;
+  final FormzSubmissionStatus status;
+
+  @override
+  List<Object> get props => [dateInput, status];
+
+  ScheduleFormState copyWith({
+    DateInput? dateInput,
+    FormzSubmissionStatus? status,
+  }) {
+    return ScheduleFormState(
+      dateInput: dateInput ?? this.dateInput,
+      status: status ?? this.status,
+    );
+  }
+}

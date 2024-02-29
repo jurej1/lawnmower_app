@@ -6,3 +6,11 @@ sealed class ScheduleFormEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class ScheduleFormDateUpdated extends ScheduleFormEvent {
+  final DateTime date;
+
+  const ScheduleFormDateUpdated({required this.date});
+}
+
+class ScheduleFormSubmit extends ScheduleFormEvent {}
