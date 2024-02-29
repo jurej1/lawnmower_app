@@ -154,9 +154,21 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
         length: state.calculatePathLength(),
       );
 
+      final newPath = await generatePathInsidePolygon(
+        points
+            .map(
+              (e) => {
+                "lat": e.latitude,
+                "lng": e.longitude,
+              },
+            )
+            .toList(),
+        3,
+      );
+
       await Future.wait([
         _firebaseRepository.setPathData(pathData),
-        _firebaseRepository.setCutPath(state.path!),
+        _firebaseRepository.setCutPath(newPath ?? []),
         _firebaseRepository.setCutArea(points),
       ]);
 

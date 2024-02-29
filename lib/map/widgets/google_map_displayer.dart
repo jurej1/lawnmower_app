@@ -46,13 +46,6 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
     setCustomMarkerIcon();
   }
 
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CutAreaBloc, CutAreaState>(
@@ -64,7 +57,7 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              zoom: 18.0,
+              zoom: 18.5,
               target: state.homeBaseLocation ?? state.userLocation,
             ),
             markers: {
@@ -160,5 +153,12 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
         return const LinearProgressIndicator();
       },
     );
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 }
