@@ -136,6 +136,7 @@ class ScheduleView extends StatelessWidget {
               itemBuilder: (context, i) {
                 return ListTile(
                   title: Text(DateFormat().format(state.schedules[i].time)),
+                  onLongPress: () {},
                 );
               },
             );

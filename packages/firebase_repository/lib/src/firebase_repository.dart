@@ -83,7 +83,15 @@ class FirebaseRepository {
     return _database.ref("schedules").get();
   }
 
-  Future<void> addSchedule(Schedule schedule) {
-    return _database.ref("schedules").push().set(schedule.toMap());
+  Future<DatabaseReference> addSchedule(Schedule schedule) async {
+    DatabaseReference ref = _database.ref("schedules").push();
+
+    await ref.set(schedule.toMap());
+
+    return ref;
+  }
+
+  Future<void> deleteSchedulebyId(String id) async {
+    return _database.ref("schedules").child(id).remove();
   }
 }

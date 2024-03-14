@@ -27,7 +27,6 @@ class Schedule extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'time': time.millisecondsSinceEpoch,
     };
   }

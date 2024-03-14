@@ -14,3 +14,9 @@ class ScheduleListItemAdded extends ScheduleListEvent {
 
   const ScheduleListItemAdded({required this.schedule});
 }
+
+class ScheduleListRemoveItem extends ScheduleListEvent {
+  final String id;
+
+  const ScheduleListRemoveItem({required this.id});
+}

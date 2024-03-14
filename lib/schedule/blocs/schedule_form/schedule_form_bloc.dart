@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_repository/firebase_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
@@ -27,7 +28,7 @@ class ScheduleFormBloc extends Bloc<ScheduleFormEvent, ScheduleFormState> {
     on<ScheduleFormSubmit>(_mapSubmitToState);
   }
 
-  FirebaseRepository _firebaseRepository;
+  final FirebaseRepository _firebaseRepository;
 
   FutureOr<void> _mapDateUpdatedToState(ScheduleFormDateUpdated event, Emitter<ScheduleFormState> emit) {
     final newVal = DateInput.dirty(event.date);
@@ -76,12 +77,12 @@ class ScheduleFormBloc extends Bloc<ScheduleFormEvent, ScheduleFormState> {
           ),
         );
 
-        await _firebaseRepository.addSchedule(schedule);
+        DatabaseReference ref = await _firebaseRepository.addSchedule(schedule);
 
         emit(
           state.copyWith(
             status: FormzSubmissionStatus.success,
-            schedule: schedule,
+            schedule: schedule.copyWith(id: ref.key),
           ),
         );
       } catch (e) {

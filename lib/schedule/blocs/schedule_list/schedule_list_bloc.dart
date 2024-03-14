@@ -15,6 +15,7 @@ class ScheduleListBloc extends Bloc<ScheduleListEvent, ScheduleListState> {
         super(ScheduleListLoading()) {
     on<ScheduleListLoad>(_mapLoadToState);
     on<ScheduleListItemAdded>(_mapAddedToState);
+    on<ScheduleListRemoveItem>(_mapRemoveToState);
   }
 
   final FirebaseRepository _firebaseRepository;
@@ -24,13 +25,15 @@ class ScheduleListBloc extends Bloc<ScheduleListEvent, ScheduleListState> {
       DataSnapshot snapshot = await _firebaseRepository.getSchedulesList();
       final data = (snapshot.value as Map<Object?, Object?>).cast<String, dynamic>();
 
-      final dataFiltered = data.values
-          .map<Schedule>(
-            (e) => Schedule(
-              id: e["id"],
-              time: DateTime.fromMillisecondsSinceEpoch(e["time"]),
-            ),
-          )
+      final dataFiltered = data
+          .map((key, value) => MapEntry(
+                key,
+                Schedule(
+                  id: key,
+                  time: DateTime.fromMillisecondsSinceEpoch(value["time"]),
+                ),
+              ))
+          .values
           .toList();
 
       emit(ScheduleListSuccess(schedules: dataFiltered));
@@ -49,6 +52,12 @@ class ScheduleListBloc extends Bloc<ScheduleListEvent, ScheduleListState> {
         ..sort();
 
       emit(ScheduleListSuccess(schedules: list));
+    }
+  }
+
+  FutureOr<void> _mapRemoveToState(ScheduleListRemoveItem event, Emitter<ScheduleListState> emit) async {
+    if (state is ScheduleListSuccess) {
+      List<Schedule> list = List.from((state as ScheduleListSuccess).schedules);
     }
   }
 }
