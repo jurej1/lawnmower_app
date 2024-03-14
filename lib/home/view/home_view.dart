@@ -130,12 +130,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                   ],
                 ),
                 const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(ScheduleView.route());
-                  },
-                  child: Text("Schedules"),
-                ),
+                // TextButton(
+                //   onPressed: () {
+                //     Navigator.of(context).push(ScheduleView.route());
+                //   },
+                //   child: Text("Schedules"),
+                // ),
               ],
             ),
           ),
