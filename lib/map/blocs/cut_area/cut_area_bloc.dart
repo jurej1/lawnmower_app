@@ -195,7 +195,6 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   FutureOr<void> _mapInitToState(CutAreaInit event, Emitter<CutAreaState> emit) async {
     try {
       emit(state.copyWith(loadStatus: CutAreaStatus.loading));
-
       // points
       final cutAreaSnapshot = await _firebaseRepository.getCutArea();
       List<LatLng> points = (cutAreaSnapshot.value as List<dynamic>).map<LatLng>((e) => LatLng(e["lat"], e["lng"])).toList();

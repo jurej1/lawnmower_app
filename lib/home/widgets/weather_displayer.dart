@@ -38,8 +38,9 @@ class WeatherDisplayer extends StatelessWidget {
               )
             ],
           );
+        } else {
+          return Container();
         }
-        return Container();
       },
     );
   }

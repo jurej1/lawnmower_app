@@ -1,8 +1,13 @@
+// Importiere das Firebase-Funktionen-Modul, um Cloud-Funktionen zu erstellen
 const functions = require("firebase-functions");
+// Importiere das Geolib-Modul für geographische Berechnungen
 const geolib = require("geolib");
+// Importiere das Firebase-Admin-Modul zur Verwaltung der Firebase-Ressourcen
 const admin = require("firebase-admin");
+// Initialisiere die Firebase-App
 admin.initializeApp();
 
+// Definiere eine Klasse für Breiten- und Längengrad
 class LatLng {
   constructor(latitude, longitude) {
     this.latitude = latitude;
@@ -10,184 +15,105 @@ class LatLng {
   }
 }
 
-exports.generatePathInsidePolygon = functions.https.onRequest((
-    request, response) => {
-  response.set("Access-Control-Allow-Origin", "*");
-  response.set("Access-Control-Allow-Methods", "GET, POST");
+// Definition einer HTTP-Cloud-Funktion
+exports.generatePathInsidePolygon = functions.https.onRequest((request, response) => {
+  response.set("Access-Control-Allow-Origin", "*"); // Erlaube CORS für alle Domains
+  response.set("Access-Control-Allow-Methods", "GET, POST"); // Erlaube GET und POST
 
-
-  if (request.method !== "POST") {
+  if (request.method !== "POST") { // Nur POST erlauben, sonst Fehler senden
     response.status(405).send("Method Not Allowed");
     return;
   }
 
-
+  // Polygonpunkte aus Anfrage extrahieren und umwandeln
   const polygonPoints = request.body.polygonPoints.map(
-      (p) => new LatLng(p.lat, p.lng));
-  const stepM = request.body.stepM;
+    (p) => new LatLng(p.lat, p.lng));
+  const stepM = request.body.stepM; // Schrittweite extrahieren
 
-
-  if (!polygonPoints || !stepM) {
+  if (!polygonPoints || !stepM) { // Prüfe auf fehlende Daten und sende Fehler
     response.status(400).send("Bad Request: Missing polygonPoints or stepM");
     return;
   }
 
-
+  // Pfad innerhalb des Polygons generieren
   const path = generatePathInsidePolygon(polygonPoints, stepM);
 
-
-  response.status(200).json(path);
+  response.status(200).json(path); // Generierten Pfad als JSON senden
 });
 
 
+// Definiere eine Funktion, um einen Pfad innerhalb eines Polygons zu generieren
 function generatePathInsidePolygon(polygonPoints, stepM) {
+  // Finde die minimale und maximale Breite der Polygonpunkte
   const minX = Math.min(...polygonPoints.map((p) => p.latitude));
   const maxX = Math.max(...polygonPoints.map((p) => p.latitude));
+  // Finde die minimale und maximale Länge der Polygonpunkte
   const minY = Math.min(...polygonPoints.map((p) => p.longitude));
   const maxY = Math.max(...polygonPoints.map((p) => p.longitude));
 
+  // Konvertiere die Schrittweite von Metern in Breitengrade
   const stepLat = metersToLatitude(stepM);
+  // Konvertiere die Schrittweite von Metern in Längengrade, basierend auf der
+  // durchschnittlichen Breite
   const stepLng = metersToLongitude(stepM, (minX + maxX) / 2);
 
-  let path = [];
+  // Initialisiere ein leeres Array für den Pfad
+  const path = [];
+  // Initialisiere eine Variable, um die Bewegungsrichtung zu bestimmen
   let moveRight = true;
 
+  // Schleife durch die Breitengrade innerhalb der Grenzen des Polygons
   for (let currentX = minX; currentX <= maxX; currentX += stepLat) {
+    // Wenn die Bewegungsrichtung nach rechts ist, schleife durch die Längengrade
     if (moveRight) {
       for (let currentY = minY; currentY <= maxY; currentY += stepLng) {
+        // Erstelle einen neuen Punkt
         const point = new LatLng(currentX, currentY);
+        // Überprüfe, ob der Punkt im Polygon liegt und füge ihn zum Pfad hinzu
         if (isPointInPolygon(point, polygonPoints)) {
           path.push(point);
         }
       }
     } else {
+      // Wenn die Bewegungsrichtung nach links ist, schleife rückwärts durch die Längengrade
       for (let currentY = maxY; currentY >= minY; currentY -= stepLng) {
+        // Erstelle einen neuen Punkt
         const point = new LatLng(currentX, currentY);
+        // Überprüfe, ob der Punkt im Polygon liegt und füge ihn zum Pfad hinzu
         if (isPointInPolygon(point, polygonPoints)) {
           path.push(point);
         }
       }
     }
+    // Wechsle die Bewegungsrichtung für den nächsten Durchlauf
     moveRight = !moveRight;
   }
 
-  path = connectPoints(path);
-
+  // Gebe den generierten Pfad zurück
   return path;
 }
 
-function connectPoints(points) {
-  const connectedPath = [];
 
-  if (points.length === 0) {
-    return connectedPath;
-  }
 
-  let previousPoint = points[0];
-  connectedPath.push(previousPoint);
-
-  for (let i = 1; i < points.length; i++) {
-    const currentPoint = points[i];
-    connectedPath.push(currentPoint);
-    previousPoint = currentPoint;
-  }
-
-  return connectedPath;
-}
-
+// Umrechnung von Metern in Breitengrade
 function metersToLatitude(meters) {
   return meters / 111320;
 }
 
+// Umrechnung von Metern in Längengrade (abhängig von Breite)
 function metersToLongitude(meters, latitude) {
   const latitudeRadians = latitude * Math.PI / 180;
   return meters / (111320 * Math.cos(latitudeRadians));
 }
 
+// Prüfung, ob Punkt im Polygon liegt
 function isPointInPolygon(point, polygonPoints) {
   return geolib.isPointInPolygon(
-      {latitude: point.latitude, longitude: point.longitude},
-      polygonPoints.map((p) =>
-        ({latitude: p.latitude, longitude: p.longitude})),
+    {latitude: point.latitude, longitude: point.longitude},
+    polygonPoints.map((p) => ({latitude: p.latitude, longitude: p.longitude})),
   );
 }
 
 
-exports.calculateAreaOfGPSPolygon = functions.https.onRequest(
-    (request, response) => {
-    // Enable CORS using the `cors` express middleware.
-      const cors = require("cors")({origin: true});
-      cors(request, response, () => {
-        if (request.method !== "POST") {
-          return response.status(405).send("Method Not Allowed");
-        }
 
-        const locations = request.body.locations;
-        const radius = request.body.radius;
 
-        if (!locations || locations.length < 3 || !radius) {
-          return response.status(400).send("Invalid input");
-        }
-
-        const area = calculateAreaOfGPSPolygonOnSphereInSquareMeters(
-            locations,
-            radius,
-        );
-        response.status(200).send({area: area});
-      });
-    });
-
-function calculateAreaOfGPSPolygonOnSphereInSquareMeters(locations, radius) {
-  if (locations.length < 3) {
-    return 0;
-  }
-
-  const diameter = radius * 2;
-  const circumference = diameter * Math.PI;
-  const listY = [];
-  const listX = [];
-  const listArea = [];
-
-  // calculate segment x and y in degrees for each point
-  const latitudeRef = locations[0].latitude;
-  const longitudeRef = locations[0].longitude;
-  for (let i = 1; i < locations.length; i++) {
-    const latitude = locations[i].latitude;
-    const longitude = locations[i].longitude;
-    listY.push(calculateYSegment(latitudeRef, latitude, circumference));
-    listX.push(calculateXSegment(longitudeRef, longitude, latitude,
-        circumference));
-  }
-
-  // calculate areas for each triangle segment
-  for (let i = 1; i < listX.length; i++) {
-    const x1 = listX[i - 1];
-    const y1 = listY[i - 1];
-    const x2 = listX[i];
-    const y2 = listY[i];
-    listArea.push(calculateAreaInSquareMeters(x1, x2, y1, y2));
-  }
-
-  // sum areas of all triangle segments
-  let areasSum = 0;
-  listArea.forEach((area) => {
-    areasSum += area;
-  });
-
-  // get absolute value of area, it can't be negative
-  return Math.abs(areasSum);
-}
-
-function calculateAreaInSquareMeters(x1, x2, y1, y2) {
-  return (y1 * x2 - x1 * y2) / 2;
-}
-
-function calculateYSegment(latitudeRef, latitude, circumference) {
-  return (latitude - latitudeRef) * circumference / 360.0;
-}
-
-function calculateXSegment(longitudeRef, longitude, latitude, circumference) {
-  const latitudeInRadians = latitude * Math.PI / 180;
-  return (longitude - longitudeRef) * circumference *
-    Math.cos(latitudeInRadians) / 360.0;
-}
