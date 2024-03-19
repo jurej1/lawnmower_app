@@ -34,7 +34,7 @@ class BottomActionRow extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "t: ${state.calculateMowingTimeInSeconds().round()} min",
+                      "t: ${(state.calculateMowingTimeInSeconds() / 60).round()} min",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
