@@ -40,7 +40,7 @@ class CutAreaBloc extends Bloc<CutAreaEvent, CutAreaState> {
   }
 
   final FirebaseRepository _firebaseRepository;
-  final double stepSize = 2;
+  final double stepSize = 1;
 
   FutureOr<void> _mapDragAreaEndToState(CutAreaOnDragEnd event, Emitter<CutAreaState> emit) async {
     var newList = List<MarkerShort>.from(state.markers);

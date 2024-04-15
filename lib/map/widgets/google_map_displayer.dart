@@ -52,7 +52,6 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
       builder: (context, state) {
         if (state.loadStatus == CutAreaStatus.success) {
           return GoogleMap(
-            compassEnabled: true,
             mapType: MapType.satellite,
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             onMapCreated: _onMapCreated,
@@ -61,27 +60,27 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
               target: state.homeBaseLocation ?? state.userLocation,
             ),
             markers: {
-              ...state.markers.map(
-                (e) {
-                  return Marker(
-                    visible: !state.showPoly,
-                    markerId: MarkerId(e.id.toString()),
-                    icon: pathIcon,
-                    position: e.position,
-                    anchor: const Offset(0.5, 0.5),
-                    draggable: true,
-                    flat: true,
-                    onDragEnd: (val) {
-                      BlocProvider.of<CutAreaBloc>(context).add(
-                        CutAreaOnDragEnd(
-                          finalPosition: val,
-                          id: e.id,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ).toSet(),
+              if (!state.showPoly)
+                ...state.markers.map(
+                  (e) {
+                    return Marker(
+                      markerId: MarkerId(e.id.toString()),
+                      icon: pathIcon,
+                      position: e.position,
+                      anchor: const Offset(0.5, 0.5),
+                      draggable: true,
+                      flat: true,
+                      onDragEnd: (val) {
+                        BlocProvider.of<CutAreaBloc>(context).add(
+                          CutAreaOnDragEnd(
+                            finalPosition: val,
+                            id: e.id,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ).toSet(),
               Marker(
                 markerId: const MarkerId("home-base-position"),
                 position: state.homeBaseLocation!,
@@ -101,51 +100,51 @@ class _GoogleMapDisplayerState extends State<GoogleMapDisplayer> {
               ),
             },
             polylines: {
-              Polyline(
-                polylineId: const PolylineId("path"),
-                color: Colors.white,
-                endCap: Cap.roundCap,
-                width: 2,
-                visible: state.showPath && state.isEnoughMarkers && state.path != null,
-                points: state.path ?? [],
-                startCap: Cap.roundCap,
-              ),
-              Polyline(
-                polylineId: const PolylineId("start-path"),
-                color: Colors.blue,
-                endCap: Cap.roundCap,
-                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
-                patterns: [
-                  PatternItem.dot,
-                  PatternItem.gap(5),
-                ],
-                width: 2,
-                points: state.getMoveToStartPath(),
-                startCap: Cap.roundCap,
-              ),
-              Polyline(
-                polylineId: const PolylineId("end-path"),
-                color: Colors.blue.shade200,
-                endCap: Cap.roundCap,
-                width: 2,
-                visible: state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty,
-                patterns: [
-                  PatternItem.dot,
-                  PatternItem.gap(5),
-                ],
-                points: state.getMoveHomePath(),
-                startCap: Cap.roundCap,
-              ),
+              if (state.showPath && state.isEnoughMarkers && state.path != null)
+                Polyline(
+                  polylineId: const PolylineId("path"),
+                  color: Colors.white,
+                  endCap: Cap.roundCap,
+                  width: 2,
+                  points: state.path ?? [],
+                  startCap: Cap.roundCap,
+                ),
+              if (state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty)
+                Polyline(
+                  polylineId: const PolylineId("start-path"),
+                  color: Colors.blue,
+                  endCap: Cap.roundCap,
+                  patterns: [
+                    PatternItem.dot,
+                    PatternItem.gap(5),
+                  ],
+                  width: 2,
+                  points: state.getMoveToStartPath(),
+                  startCap: Cap.roundCap,
+                ),
+              if (state.showPath && state.isEnoughMarkers && state.homeBaseLocation != null && state.path != null && state.path!.isNotEmpty)
+                Polyline(
+                  polylineId: const PolylineId("end-path"),
+                  color: Colors.blue.shade200,
+                  endCap: Cap.roundCap,
+                  width: 2,
+                  patterns: [
+                    PatternItem.dot,
+                    PatternItem.gap(5),
+                  ],
+                  points: state.getMoveHomePath(),
+                  startCap: Cap.roundCap,
+                ),
             },
             polygons: {
-              Polygon(
-                polygonId: const PolygonId("1"),
-                fillColor: Colors.greenAccent.withOpacity(0.5),
-                strokeColor: Colors.green,
-                strokeWidth: 2,
-                visible: state.showPoly && state.isEnoughMarkers,
-                points: state.markers.map((e) => e.position).toList(),
-              ),
+              if (state.showPoly && state.isEnoughMarkers)
+                Polygon(
+                  polygonId: const PolygonId("1"),
+                  fillColor: Colors.greenAccent.withOpacity(0.5),
+                  strokeColor: Colors.green,
+                  strokeWidth: 2,
+                  points: state.markers.map((e) => e.position).toList(),
+                ),
             },
           );
         }

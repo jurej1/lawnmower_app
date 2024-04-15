@@ -58,6 +58,7 @@ class _BodyBuilder extends StatefulWidget {
 
   static provider(LatLng userLocation) {
     return BlocProvider(
+      lazy: false,
       create: (context) => CutAreaBloc(
         userLocation: userLocation,
         firebaseRepository: RepositoryProvider.of<FirebaseRepository>(context),

@@ -32,7 +32,6 @@ class _ControlDeviceViewState extends State<ControlDeviceView> {
   @override
   void initState() {
     super.initState();
-
     // SystemChrome.setPreferredOrientations([
     //   DeviceOrientation.landscapeRight,
     //   DeviceOrientation.landscapeLeft,
